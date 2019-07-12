@@ -1,0 +1,38 @@
+{
+  "name": "telegram-api",
+  "version": "1.0.0",
+  "description": "nodejs telegram api wrapper",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "prettier": "prettier --single-quote --trailing-comma es5 --no-semi --print-width 120 --write \"**/*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tawsbob/telegram-api.git"
+  },
+  "keywords": [
+    "telegram",
+    "nodejs",
+    "api",
+    "bot"
+  ],
+  "author": "Dellean Santos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tawsbob/telegram-api/issues"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run prettier"
+    }
+  },
+  "homepage": "https://github.com/tawsbob/telegram-api#readme",
+  "devDependencies": {
+    "husky": "^3.0.0",
+    "prettier": "^1.18.2"
+  },
+  "dependencies": {
+    "axios": "^0.19.0"
+  }
+}
