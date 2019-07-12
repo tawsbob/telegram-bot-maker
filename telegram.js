@@ -5,8 +5,9 @@ const BotMehods = {
     `getUpdates?offset=${offset}&limit=${limit}&timeout=${timeout}`,
 }
 
+
 class Telegram {
-  //'https://api.telegram.org'
+  
   constructor({ token, polling = true }) {
     this.token = token
     this.polling = polling
@@ -15,8 +16,8 @@ class Telegram {
     this.pollingTimeout = null
     this.updateInterval = 1500
     this.started = false
-    this.updates = []
-
+    
+    this.listeners = []
     //resolver isso depois
     this.getUpdate = this.getUpdate.bind(this)
   }
@@ -26,10 +27,32 @@ class Telegram {
     this.pollingTimeout = setTimeout(this.getUpdate, this.updateInterval)
   }
 
-  emit() {
-    const length = this.updates.length
-    for (let i = 0; i > length; i++) {
-      this.updates[i]
+  check(updates) {
+    const length = updates.length
+    
+    for (let i = 0; i < length; i++) {
+        this.checkUpdate(updates[i])
+    }
+
+    //this.updates = this.updates.concat( updates )
+
+  }
+
+  checkUpdate(update){
+    const { message } = update
+    const { text, entities } = message
+    
+    this.checkEntities(entities, text)
+
+  }
+  checkEntities(entities, text){
+    if(entities && entities.length){
+        const length = entities.length
+        for (let i = 0; i < length; i++) {
+            if(  entities[i].type === 'bot_command'){
+                this.emit(entities[i].type, text)
+            }
+        } 
     }
   }
 
@@ -46,6 +69,18 @@ class Telegram {
     return {}
   }
 
+  emit(type, command){
+    const length = this.listeners.length
+    for (let i = 0; i < length; i++) {
+        if( 
+            this.listeners[i].type === type &&
+            this.listeners[i].command === command
+            ){
+                this.listeners[i].handdler( command )
+        }
+    } 
+  }
+
   async getUpdate() {
     const params = this.getUpdateParams()
 
@@ -53,13 +88,17 @@ class Telegram {
       const apiResponse = await client.get(this.botMethodUrl('getUpdates', params))
 
       if (apiResponse && apiResponse.data && apiResponse.data.result) {
-        console.log(JSON.stringify(apiResponse.data.result))
-        this.updates.push(apiResponse.data.result)
+        this.check(apiResponse.data.result)
       }
     } catch (e) {
       console.log(e)
     }
   }
+
+  command(command, handdler){
+    this.listeners.push({ type: 'bot_command', command, handdler  })
+  }
+
 }
 
 module.exports = Telegram
