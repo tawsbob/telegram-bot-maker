@@ -3,7 +3,13 @@ const client = require('./axio-client')
 const BotMehods = {
   getUpdates: ({ limit = 10, offset = 0, timeout = 20000 }) =>
     `getUpdates?offset=${offset}&limit=${limit}&timeout=${timeout}`,
-    sendMessage: ()=> 'sendMessage'
+  sendMessage: () => 'sendMessage',
+}
+
+class Context {
+    constructor({ }){
+
+    }
 }
 
 class Telegram {
@@ -88,27 +94,24 @@ class Telegram {
     }
   }
 
-  
   command(command, handdler) {
     this.listeners.push({ type: 'bot_command', command, handdler })
   }
 
-  async sendMessage(){
-      //{ chat_id, text, parse_mode, disable_web_page_preview, disable_notification, reply_to_message_id, reply_markup }
-      try {
-        const response = await client.post(
-            this.botMethodUrl('sendMessage'),
-            {
-                chat_id: 839714887,
-                text: 'teste'
-            }
-        )
-        console.log(response)
-      } catch(e){
-          console.log(e)
+  async sendMessage({ chat_id, text, parse_mode, disable_web_page_preview, disable_notification, reply_to_message_id, reply_markup }) {
+    //
+    try {
+      const response = await client.post(this.botMethodUrl('sendMessage'), {
+        chat_id: 839714887,
+        text: 'teste',
+      })
+      if(response && response.data && response.data.result){
+          return response.data.result
       }
+    } catch (e) {
+      console.log(e)
+    }
   }
-
 }
 
 module.exports = Telegram
