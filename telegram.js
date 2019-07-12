@@ -3,11 +3,10 @@ const client = require('./axio-client')
 const BotMehods = {
   getUpdates: ({ limit = 10, offset = 0, timeout = 20000 }) =>
     `getUpdates?offset=${offset}&limit=${limit}&timeout=${timeout}`,
+    sendMessage: ()=> 'sendMessage'
 }
 
-
 class Telegram {
-  
   constructor({ token, polling = true }) {
     this.token = token
     this.polling = polling
@@ -16,10 +15,12 @@ class Telegram {
     this.pollingTimeout = null
     this.updateInterval = 1500
     this.started = false
-    
+
     this.listeners = []
+
     //resolver isso depois
     this.getUpdate = this.getUpdate.bind(this)
+    this.sendMessage = this.sendMessage.bind(this)
   }
 
   lauch() {
@@ -29,30 +30,25 @@ class Telegram {
 
   check(updates) {
     const length = updates.length
-    
     for (let i = 0; i < length; i++) {
-        this.checkUpdate(updates[i])
+      this.checkUpdate(updates[i])
     }
-
-    //this.updates = this.updates.concat( updates )
-
   }
 
-  checkUpdate(update){
+  checkUpdate(update) {
     const { message } = update
     const { text, entities } = message
-    
-    this.checkEntities(entities, text)
 
+    this.checkEntities(entities, text)
   }
-  checkEntities(entities, text){
-    if(entities && entities.length){
-        const length = entities.length
-        for (let i = 0; i < length; i++) {
-            if(  entities[i].type === 'bot_command'){
-                this.emit(entities[i].type, text)
-            }
-        } 
+  checkEntities(entities, text) {
+    if (entities && entities.length) {
+      const length = entities.length
+      for (let i = 0; i < length; i++) {
+        if (entities[i].type === 'bot_command') {
+          this.emit(entities[i].type, text)
+        }
+      }
     }
   }
 
@@ -69,16 +65,13 @@ class Telegram {
     return {}
   }
 
-  emit(type, command){
+  emit(type, command) {
     const length = this.listeners.length
     for (let i = 0; i < length; i++) {
-        if( 
-            this.listeners[i].type === type &&
-            this.listeners[i].command === command
-            ){
-                this.listeners[i].handdler( command )
-        }
-    } 
+      if (this.listeners[i].type === type && this.listeners[i].command === command) {
+        this.listeners[i].handdler(command)
+      }
+    }
   }
 
   async getUpdate() {
@@ -95,8 +88,25 @@ class Telegram {
     }
   }
 
-  command(command, handdler){
-    this.listeners.push({ type: 'bot_command', command, handdler  })
+  
+  command(command, handdler) {
+    this.listeners.push({ type: 'bot_command', command, handdler })
+  }
+
+  async sendMessage(){
+      //{ chat_id, text, parse_mode, disable_web_page_preview, disable_notification, reply_to_message_id, reply_markup }
+      try {
+        const response = await client.post(
+            this.botMethodUrl('sendMessage'),
+            {
+                chat_id: 839714887,
+                text: 'teste'
+            }
+        )
+        console.log(response)
+      } catch(e){
+          console.log(e)
+      }
   }
 
 }
