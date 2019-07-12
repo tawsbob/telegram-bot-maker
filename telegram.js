@@ -6,13 +6,36 @@ const BotMehods = {
   sendMessage: () => 'sendMessage',
 }
 
-class Context {
-    constructor({ }){
+const ApiMethods = {
+  getUpdates: {
+    restMethod: 'get',
+    endpoint: ({ limit = 10, offset = 0, timeout = 20000 }) =>
+      `getUpdates?offset=${offset}&limit=${limit}&timeout=${timeout}`,
+  },
+}
 
-    }
+class Context {
+  constructor({}) {}
 }
 
 class Telegram {
+  constructor({}) {}
+
+  async apiCall(apiMethod, params) {
+    try {
+      const response = await client.get()
+
+      if (response && response.data && response.data.result) {
+        return response.data.result
+      }
+    } catch (e) {
+      console.warn(e)
+      return null
+    }
+  }
+}
+
+class Bot {
   constructor({ token, polling = true }) {
     this.token = token
     this.polling = polling
@@ -98,15 +121,23 @@ class Telegram {
     this.listeners.push({ type: 'bot_command', command, handdler })
   }
 
-  async sendMessage({ chat_id, text, parse_mode, disable_web_page_preview, disable_notification, reply_to_message_id, reply_markup }) {
+  async sendMessage({
+    chat_id,
+    text,
+    parse_mode,
+    disable_web_page_preview,
+    disable_notification,
+    reply_to_message_id,
+    reply_markup,
+  }) {
     //
     try {
       const response = await client.post(this.botMethodUrl('sendMessage'), {
         chat_id: 839714887,
         text: 'teste',
       })
-      if(response && response.data && response.data.result){
-          return response.data.result
+      if (response && response.data && response.data.result) {
+        return response.data.result
       }
     } catch (e) {
       console.log(e)
@@ -114,4 +145,4 @@ class Telegram {
   }
 }
 
-module.exports = Telegram
+module.exports = Bot
