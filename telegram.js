@@ -45,7 +45,8 @@ class Telegram {
       const url = this.baseBotUrl + endpoint
       const response = await client[method](url, params)
 
-      console.log(url)
+      //console.log(url)
+      //console.log(JSON.stringify(params))
 
       if (response && response.data && response.data.result) {
         return response.data.result
@@ -133,15 +134,37 @@ class Context extends Telegram {
     this.update = props.update
   }
 
-  getChatId() {
+  getType() {
     const { callback_query, message } = this.update
-
-    if (callback_query && callback_query.message.chat.id) {
-      return this.update.callback_query.message.chat.id
+    if (callback_query) {
+      return 'callback_query'
     }
 
-    if (message && message.chat.id) {
-      return this.update.message.chat.id
+    if (message) {
+      return 'message'
+    }
+
+    return null
+  }
+
+  getInsideObj() {
+    const type = this.getType()
+    return this.update[type]
+  }
+
+  getFromId() {
+    return this.getInsideObj().from.id
+  }
+
+  getChatId() {
+    return this.getInsideObj().chat.id
+  }
+
+  ref() {
+    return {
+      update_id: parseInt(this.update.update_id),
+      chat_id: this.getChatId(),
+      from_id: this.getFromId(),
     }
   }
 
@@ -153,7 +176,7 @@ class Context extends Telegram {
   }
 
   reply(text, params) {
-    this.sendMessage(this.contextParams({ text, ...params }))
+    return this.sendMessage(this.contextParams({ text, ...params }))
   }
 }
 
@@ -164,13 +187,14 @@ class Bot extends Telegram {
 
     this.polling = polling
     this.pollingTimeout = null
-    this.updateInterval = 1250
+    this.updateInterval = 100
     this.started = false
 
     this.listeners = {
       message: null,
       command: [],
       callback_query: [],
+      reply: [],
     }
 
     this.props = props
@@ -178,6 +202,8 @@ class Bot extends Telegram {
 
     this.Buttons = new Buttons(this)
     this.Keyboard = Keyboard
+
+    this.sessions = []
   }
 
   lauch() {
@@ -197,7 +223,7 @@ class Bot extends Telegram {
     try {
       const { offset } = this
 
-      const updates = await this.getUpdate({ offset, limit: 20 })
+      const updates = await this.getUpdate({ offset, limit: 600 })
 
       if (updates) {
         this.check(updates)
@@ -231,23 +257,68 @@ class Bot extends Telegram {
     }
 
     if (update.message) {
+      console.log('é mensagem de ' + update.message.from.first_name)
       const { message } = update
       const { text, entities } = message
-      const isCommand = this.checkEntities(entities, text)
+      const isCommand = this.checkEntities(entities, text, update)
 
       if (!isCommand) {
-        this.triggerMsgListener(update)
+        //se tem reply e se é para o usuário correto
+        this.makeReply(update)
       }
     }
   }
 
-  checkEntities(entities, text) {
+  makeReply(update) {
+    const length = this.listeners.reply.length
+    let toDelete = []
+
+    for (let i = 0; i < length; i++) {
+      const replyListener = this.listeners.reply[i]
+
+      if (
+        update.message &&
+        replyListener.ref &&
+        replyListener.ref.update_id < parseInt(update.update_id) &&
+        replyListener.ref.chat_id == update.message.chat.id &&
+        replyListener.ref.from_id == update.message.from.id
+      ) {
+        replyListener.handdler(update, new Context({ ...this.props, update }), this.setReplyListener)
+        toDelete.push(replyListener.ref)
+      }
+    }
+
+    if (toDelete.length) {
+      //filter for all listener to delete
+      this.listeners.reply = this.listeners.reply.reduce((acc, listener) => {
+        if (listener.ref) {
+          const isInarray = toDelete.filter(r => {
+            return (
+              r.update_id == listener.ref.update_id &&
+              r.chat_id == listener.ref.chat_id &&
+              r.from_id == listener.ref.from_id
+            )
+          })
+
+          if (!isInarray.length) {
+            acc.push(listener)
+          }
+        }
+
+        return acc
+      }, [])
+    } else {
+      this.triggerMsgListener(update)
+    }
+  }
+
+  checkEntities(entities, text, update) {
     let isCommand = false
     if (entities && entities.length) {
       const length = entities.length
       for (let i = 0; i < length; i++) {
         if (entities[i].type === 'bot_command') {
-          this.emit(entities[i].type, text)
+          this.emit(text.trim(), update)
           isCommand = true
         }
       }
@@ -265,33 +336,40 @@ class Bot extends Telegram {
     const length = this.listeners.callback_query.length
     for (let i = 0; i < length; i++) {
       if (this.listeners.callback_query[i].data === data) {
-        this.listeners.callback_query[i].handdler(update.callback_query, new Context({ ...this.props, update }))
+        this.listeners.callback_query[i].handdler(
+          update.callback_query,
+          new Context({ ...this.props, update }),
+          this.setReplyListener
+        )
       }
     }
   }
 
   triggerMsgListener(update) {
     if (this.listeners.message) {
-      const { message } = update
-      this.listeners.message(message, new Context({ ...this.props, update }))
+      this.listeners.message(update, new Context({ ...this.props, update }), this.setReplyListener)
     }
   }
 
-  emit(type, command) {
+  emit(command, update) {
     const length = this.listeners.command.length
     for (let i = 0; i < length; i++) {
-      if (this.listeners.command[i].type === type && this.listeners.command[i].command === command) {
-        this.listeners.command[i].handdler(command)
+      if (this.listeners.command[i].command === command) {
+        this.listeners.command[i].handdler(update, new Context({ ...this.props, update }), this.setReplyListener)
       }
     }
   }
 
   command(command, handdler) {
-    this.listeners.command.push({ type: 'bot_command', command, handdler })
+    this.listeners.command.push({ command, handdler })
   }
 
   setCallback_query(data, handdler) {
     this.listeners.callback_query.push({ data, handdler })
+  }
+
+  setReplyListener(ref, handdler) {
+    this.listeners.reply.push({ ref, handdler })
   }
 
   on(listener, handdler) {

@@ -19,8 +19,8 @@ bot.sendMessage({
   text: 'teste',
 })*/
 
-bot.on('message', (update, ctx) => {
-  ctx.reply(
+bot.on('message', (update, ctx, onReply) => {
+  /*ctx.reply(
     'valeu',
     Keyboard('inline', [
       bot.Buttons.CallBack('acao 1', 'id-acao-1', (cb, _ctx) => {
@@ -30,7 +30,21 @@ bot.on('message', (update, ctx) => {
         _ctx.reply('id-acao-2')
       }),
     ])
-  )
+  )*/
+
+  console.log(update.message.text)
+  ctx.reply(`valeu ${update.message.from.first_name}`)
+
+  //context.ref() is required because is the reference to know when reply
+  onReply(ctx.ref(), (up, _ctx, _onReply) => {
+    console.log('me respondeu certinho 1')
+    _ctx.reply('reply 1')
+
+    _onReply(_ctx.ref(), (__, __ctx) => {
+      console.log('certinho 2')
+      __ctx.reply('reply 2')
+    })
+  })
 })
 
 /*
