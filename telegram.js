@@ -3,36 +3,35 @@ const client = require('./axio-client')
 const autoBind = require('auto-bind')
 
 class Buttons {
-  constructor(bot){
-      this.bot = bot
+  constructor(bot) {
+    this.bot = bot
   }
-  CallBack(text, callback_data, handdler, hide = false){
-    if(handdler){
+  CallBack(text, callback_data, handdler, hide = false) {
+    if (handdler) {
       this.bot.setCallback_query(callback_data, handdler)
     }
     return {
       text,
       callback_data,
-      hide
+      hide,
     }
   }
-  Keyboard(text, opts = null){
+  Keyboard(text, opts = null) {
     return {
       text,
-      ...opts
+      ...opts,
     }
   }
 }
 
-const Keyboard = (type='inline', buttons, opts)=>{
-  if(type==='inline'){
+const Keyboard = (type = 'inline', buttons, opts) => {
+  if (type === 'inline') {
     return { reply_markup: { inline_keyboard: [buttons] } }
   }
 
-  const options = opts ? opts : {resize_keyboard: true, one_time_keyboard: true}
-  return { reply_markup: { keyboard: [buttons],  ...options } }
+  const options = opts ? opts : { resize_keyboard: true, one_time_keyboard: true }
+  return { reply_markup: { keyboard: [buttons], ...options } }
 }
-
 
 class Telegram {
   constructor({ token }) {
@@ -129,25 +128,33 @@ class Telegram {
 }
 
 class Context extends Telegram {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.update = props.update
   }
 
-  contextParams(params){
-    return {
-      chat_id: this.update.message.chat.id,
-      ...params
+  getChatId() {
+    const { callback_query, message } = this.update
+
+    if (callback_query && callback_query.message.chat.id) {
+      return this.update.callback_query.message.chat.id
+    }
+
+    if (message && message.chat.id) {
+      return this.update.message.chat.id
     }
   }
 
-  reply(text, params){
-
-    this.sendMessage(
-      this.contextParams({ text, ...params })
-    )
+  contextParams(params) {
+    return {
+      chat_id: this.getChatId(),
+      ...params,
+    }
   }
 
+  reply(text, params) {
+    this.sendMessage(this.contextParams({ text, ...params }))
+  }
 }
 
 class Bot extends Telegram {
@@ -163,7 +170,7 @@ class Bot extends Telegram {
     this.listeners = {
       message: null,
       command: [],
-      callback_query: []
+      callback_query: [],
     }
 
     this.props = props
@@ -173,20 +180,17 @@ class Bot extends Telegram {
     this.Keyboard = Keyboard
   }
 
-
-
   lauch() {
     this.started = true
     this.updateTrigger()
   }
 
-  updateTrigger(){
+  updateTrigger() {
     this.pollingTimeout = setTimeout(this.lookingForUpdates, this.updateInterval)
   }
 
   async lookingForUpdates() {
-
-    if(!this.started){
+    if (!this.started) {
       return
     }
 
@@ -195,20 +199,17 @@ class Bot extends Telegram {
 
       const updates = await this.getUpdate({ offset, limit: 20 })
 
-      if(updates){
+      if (updates) {
         this.check(updates)
       }
 
-      if(updates && updates.length){
+      if (updates && updates.length) {
         //https://core.telegram.org/bots/api#getting-updates
         //Must be greater by one than the highest among the identifiers of previously received updates
-        this.offset = updates[
-          updates.length-1
-        ].update_id + 1
+        this.offset = updates[updates.length - 1].update_id + 1
       }
 
       this.updateTrigger()
-
     } catch (e) {
       console.warn(e)
     }
@@ -222,29 +223,22 @@ class Bot extends Telegram {
   }
 
   checkUpdate(update) {
+    console.log(JSON.stringify(update))
 
-    console.log(
-      JSON.stringify(
-        update
-      )
-    )
-
-    if(update.callback_query){
-        const { data } = update.callback_query
-          this.triggerCallBackQueryListeners(data,update)
+    if (update.callback_query) {
+      const { data } = update.callback_query
+      this.triggerCallBackQueryListeners(data, update)
     }
 
-    if(update.message){
-
-      const { message }         = update
-      const { text, entities }  = message
-      const isCommand           = this.checkEntities(entities, text)
+    if (update.message) {
+      const { message } = update
+      const { text, entities } = message
+      const isCommand = this.checkEntities(entities, text)
 
       if (!isCommand) {
         this.triggerMsgListener(update)
       }
     }
-
   }
 
   checkEntities(entities, text) {
@@ -267,25 +261,19 @@ class Bot extends Telegram {
     clearTimeout(this.pollingTimeout)
   }
 
-  triggerCallBackQueryListeners(data, update){
+  triggerCallBackQueryListeners(data, update) {
     const length = this.listeners.callback_query.length
     for (let i = 0; i < length; i++) {
       if (this.listeners.callback_query[i].data === data) {
-        this.listeners.callback_query[i].handdler(
-          update.callback_query,
-          new Context({ ...this.props, update })
-        )
+        this.listeners.callback_query[i].handdler(update.callback_query, new Context({ ...this.props, update }))
       }
     }
   }
 
-  triggerMsgListener(update){
+  triggerMsgListener(update) {
     if (this.listeners.message) {
       const { message } = update
-      this.listeners.message(
-        message,
-        new Context({ ...this.props, update })
-      )
+      this.listeners.message(message, new Context({ ...this.props, update }))
     }
   }
 
@@ -302,7 +290,7 @@ class Bot extends Telegram {
     this.listeners.command.push({ type: 'bot_command', command, handdler })
   }
 
-  setCallback_query(data, handdler){
+  setCallback_query(data, handdler) {
     this.listeners.callback_query.push({ data, handdler })
   }
 
@@ -316,5 +304,5 @@ class Bot extends Telegram {
 module.exports = {
   Bot,
   Keyboard,
-  Buttons
+  Buttons,
 }
