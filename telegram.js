@@ -1,38 +1,101 @@
 const client = require('./axio-client')
 
-const BotMehods = {
-  getUpdates: ({ limit = 10, offset = 0, timeout = 20000 }) =>
-    `getUpdates?offset=${offset}&limit=${limit}&timeout=${timeout}`,
-  sendMessage: () => 'sendMessage',
-}
 
-const ApiMethods = {
-  getUpdates: {
-    restMethod: 'get',
-    endpoint: ({ limit = 10, offset = 0, timeout = 20000 }) =>
-      `getUpdates?offset=${offset}&limit=${limit}&timeout=${timeout}`,
-  },
-}
-
-class Context {
-  constructor({}) {}
-}
 
 class Telegram {
-  constructor({}) {}
 
-  async apiCall(apiMethod, params) {
+  constructor({ token }) {
+    this.baseUrl = 'https://api.telegram.org/'
+    this.baseBotUrl = `${this.baseUrl}bot${token}/`
+  }
+
+  async apiCall({ method, params, endpoint }) {
     try {
-      const response = await client.get()
+      const url = this.baseBotUrl + endpoint
+      const response = await client[method](url, params)
 
       if (response && response.data && response.data.result) {
         return response.data.result
       }
+
+      return null
+
     } catch (e) {
       console.warn(e)
       return null
     }
   }
+
+  getUpdate({ limit, offset, timeout }){
+    return this.apiCall({ endpoint: `getUpdates?offset=${offset}&limit=${limit}&timeout=${timeout}`, method: 'get'   })
+  }
+  getMe(){
+      return this.apiCall({ endpoint: 'getMe', method: 'get' })
+  }
+  sendMessage(params) {
+     return this.apiCall({ endpoint: 'sendMessage', method: 'post', params })
+  }
+  forwardMessage(params){
+    return this.apiCall({ endpoint: 'forwardMessage', method: 'post', params })
+  }
+  sendPhoto(params){
+    return this.apiCall({ endpoint: 'sendPhoto', method: 'post', params })
+  }
+  sendAudio(params){
+    return this.apiCall({ endpoint: 'sendAudio', method: 'post', params })
+  }
+  sendDocument(params){
+    return this.apiCall({ endpoint: 'sendDocument', method: 'post', params })
+  }
+  sendVideo(params){
+    return this.apiCall({ endpoint: 'sendVideo', method: 'post', params })
+  }
+  sendAnimation(params){
+    return this.apiCall({ endpoint: 'sendAnimation', method: 'post', params })
+  }
+  sendVoice(params){
+    return this.apiCall({ endpoint: 'sendVoice', method: 'post', params })
+  }
+  sendVideoNote(params){
+    return this.apiCall({ endpoint: 'sendVideoNote', method: 'post', params })
+  }
+  sendMediaGroup(params){
+    return this.apiCall({ endpoint: 'sendMediaGroup', method: 'post', params })
+  }
+
+  sendLocation(params){
+    return this.apiCall({ endpoint: 'sendLocation', method: 'post', params })
+  }
+
+  editMessageLiveLocation(params){
+    return this.apiCall({ endpoint: 'editMessageLiveLocation', method: 'post', params })
+  }
+
+  stopMessageLiveLocation(params){
+    return this.apiCall({ endpoint: 'stopMessageLiveLocation', method: 'post', params })
+  }
+
+  sendVenue(params){
+    return this.apiCall({ endpoint: 'sendVenue', method: 'post', params })
+  }
+
+
+  sendContact(params){
+    return this.apiCall({ endpoint: 'sendContact', method: 'post', params })
+  }
+
+
+  sendPoll(params){
+    return this.apiCall({ endpoint: 'sendPoll', method: 'post', params })
+  }
+
+
+  sendChatAction(params){
+    return this.apiCall({ endpoint: 'sendChatAction', method: 'post', params })
+  }
+
+
+
 }
 
 class Bot {
@@ -121,28 +184,7 @@ class Bot {
     this.listeners.push({ type: 'bot_command', command, handdler })
   }
 
-  async sendMessage({
-    chat_id,
-    text,
-    parse_mode,
-    disable_web_page_preview,
-    disable_notification,
-    reply_to_message_id,
-    reply_markup,
-  }) {
-    //
-    try {
-      const response = await client.post(this.botMethodUrl('sendMessage'), {
-        chat_id: 839714887,
-        text: 'teste',
-      })
-      if (response && response.data && response.data.result) {
-        return response.data.result
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }
+
 }
 
-module.exports = Bot
+module.exports = Telegram

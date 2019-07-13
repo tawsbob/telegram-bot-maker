@@ -4,7 +4,7 @@
   "description": "nodejs telegram api wrapper",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node ./index.js",
     "prettier": "prettier --single-quote --trailing-comma es5 --no-semi --print-width 120 --write \"**/*.js\""
   },
   "repository": {
