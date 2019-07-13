@@ -19,8 +19,8 @@ telegraClient.sendMessage({
   text: 'teste',
 })*/
 
-telegraClient.on('message', ctx => {
-  console.log(ctx)
+telegraClient.on('message', (update, ctx) => {
+  ctx.reply('valeu')
 })
 telegraClient.command('/menu', () => {
   console.log('menu ativado')
