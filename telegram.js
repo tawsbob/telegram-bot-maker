@@ -1,12 +1,12 @@
+const queryString = require('query-string')
 const client = require('./axio-client')
-
-
+const autoBind = require('auto-bind')
 
 class Telegram {
-
   constructor({ token }) {
     this.baseUrl = 'https://api.telegram.org/'
     this.baseBotUrl = `${this.baseUrl}bot${token}/`
+    autoBind(this)
   }
 
   async apiCall({ method, params, endpoint }) {
@@ -19,105 +19,110 @@ class Telegram {
       }
 
       return null
-
     } catch (e) {
       console.warn(e)
       return null
     }
   }
 
-  getUpdate({ limit, offset, timeout }){
-    return this.apiCall({ endpoint: `getUpdates?offset=${offset}&limit=${limit}&timeout=${timeout}`, method: 'get'   })
+  getUpdate(params) {
+    return this.apiCall({ endpoint: `getUpdates?${queryString.stringify(params)}`, method: 'get' })
   }
-  getMe(){
-      return this.apiCall({ endpoint: 'getMe', method: 'get' })
+  getMe() {
+    return this.apiCall({ endpoint: 'getMe', method: 'get' })
   }
   sendMessage(params) {
-     return this.apiCall({ endpoint: 'sendMessage', method: 'post', params })
+    return this.apiCall({ endpoint: 'sendMessage', method: 'post', params })
   }
-  forwardMessage(params){
+  forwardMessage(params) {
     return this.apiCall({ endpoint: 'forwardMessage', method: 'post', params })
   }
-  sendPhoto(params){
+  sendPhoto(params) {
     return this.apiCall({ endpoint: 'sendPhoto', method: 'post', params })
   }
-  sendAudio(params){
+  sendAudio(params) {
     return this.apiCall({ endpoint: 'sendAudio', method: 'post', params })
   }
-  sendDocument(params){
+  sendDocument(params) {
     return this.apiCall({ endpoint: 'sendDocument', method: 'post', params })
   }
-  sendVideo(params){
+  sendVideo(params) {
     return this.apiCall({ endpoint: 'sendVideo', method: 'post', params })
   }
-  sendAnimation(params){
+  sendAnimation(params) {
     return this.apiCall({ endpoint: 'sendAnimation', method: 'post', params })
   }
-  sendVoice(params){
+  sendVoice(params) {
     return this.apiCall({ endpoint: 'sendVoice', method: 'post', params })
   }
-  sendVideoNote(params){
+  sendVideoNote(params) {
     return this.apiCall({ endpoint: 'sendVideoNote', method: 'post', params })
   }
-  sendMediaGroup(params){
+  sendMediaGroup(params) {
     return this.apiCall({ endpoint: 'sendMediaGroup', method: 'post', params })
   }
 
-  sendLocation(params){
+  sendLocation(params) {
     return this.apiCall({ endpoint: 'sendLocation', method: 'post', params })
   }
 
-  editMessageLiveLocation(params){
+  editMessageLiveLocation(params) {
     return this.apiCall({ endpoint: 'editMessageLiveLocation', method: 'post', params })
   }
 
-  stopMessageLiveLocation(params){
+  stopMessageLiveLocation(params) {
     return this.apiCall({ endpoint: 'stopMessageLiveLocation', method: 'post', params })
   }
 
-  sendVenue(params){
+  sendVenue(params) {
     return this.apiCall({ endpoint: 'sendVenue', method: 'post', params })
   }
 
-
-  sendContact(params){
+  sendContact(params) {
     return this.apiCall({ endpoint: 'sendContact', method: 'post', params })
   }
 
-
-  sendPoll(params){
+  sendPoll(params) {
     return this.apiCall({ endpoint: 'sendPoll', method: 'post', params })
   }
 
-
-  sendChatAction(params){
+  sendChatAction(params) {
     return this.apiCall({ endpoint: 'sendChatAction', method: 'post', params })
   }
 
-
-
+  getUserProfilePhotos(params) {
+    return this.apiCall({ endpoint: `getUserProfilePhotos?${queryString.stringify(params)}`, method: 'get' })
+  }
 }
 
-class Bot {
-  constructor({ token, polling = true }) {
-    this.token = token
+class Bot extends Telegram {
+  constructor(props) {
+    super(props)
+    const { token, polling = true } = props
+
     this.polling = polling
-    this.baseUrl = 'https://api.telegram.org/'
-    this.baseBotUrl = `${this.baseUrl}bot${token}/`
     this.pollingTimeout = null
     this.updateInterval = 1500
     this.started = false
 
-    this.listeners = []
-
-    //resolver isso depois
-    this.getUpdate = this.getUpdate.bind(this)
-    this.sendMessage = this.sendMessage.bind(this)
+    this.listener = {
+      message: null,
+      command: [],
+    }
   }
 
   lauch() {
     this.started = true
-    this.pollingTimeout = setTimeout(this.getUpdate, this.updateInterval)
+    this.pollingTimeout = setTimeout(this.lookingForUpdates, this.updateInterval)
+  }
+
+  async lookingForUpdates() {
+    try {
+      const updates = await this.getUpdate()
+      this.check(updates)
+    } catch (e) {
+      console.warn(e)
+    }
   }
 
   check(updates) {
@@ -131,17 +136,27 @@ class Bot {
     const { message } = update
     const { text, entities } = message
 
-    this.checkEntities(entities, text)
+    const isCommand = this.checkEntities(entities, text)
+
+    if (!isCommand) {
+      if (this.listener.message) {
+        this.listener.message(message)
+      }
+    }
   }
   checkEntities(entities, text) {
+    let isCommand = false
     if (entities && entities.length) {
       const length = entities.length
       for (let i = 0; i < length; i++) {
         if (entities[i].type === 'bot_command') {
           this.emit(entities[i].type, text)
+          isCommand = true
         }
       }
     }
+
+    return isCommand
   }
 
   stop() {
@@ -149,42 +164,24 @@ class Bot {
     clearTimeout(this.pollingTimeout)
   }
 
-  botMethodUrl(method, params) {
-    return this.baseBotUrl + BotMehods[method](params)
-  }
-
-  getUpdateParams() {
-    return {}
-  }
-
   emit(type, command) {
-    const length = this.listeners.length
+    const length = this.listener.command.length
     for (let i = 0; i < length; i++) {
-      if (this.listeners[i].type === type && this.listeners[i].command === command) {
-        this.listeners[i].handdler(command)
+      if (this.listener.command[i].type === type && this.listener.command[i].command === command) {
+        this.listener.command[i].handdler(command)
       }
-    }
-  }
-
-  async getUpdate() {
-    const params = this.getUpdateParams()
-
-    try {
-      const apiResponse = await client.get(this.botMethodUrl('getUpdates', params))
-
-      if (apiResponse && apiResponse.data && apiResponse.data.result) {
-        this.check(apiResponse.data.result)
-      }
-    } catch (e) {
-      console.log(e)
     }
   }
 
   command(command, handdler) {
-    this.listeners.push({ type: 'bot_command', command, handdler })
+    this.listener.command.push({ type: 'bot_command', command, handdler })
   }
 
-
+  on(listener, handdler) {
+    if (this.listener[listener] !== 'undefined') {
+      this.listener[listener] = handdler
+    }
+  }
 }
 
-module.exports = Telegram
+module.exports = Bot

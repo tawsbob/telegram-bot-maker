@@ -3,9 +3,15 @@ const Telegram = require('./telegram')
 const token = '856565326:AAFk5l23CC_OUk3pUOSoGKeUiDj_StpzLjs'
 const telegraClient = new Telegram({ token })
 
-telegraClient.getUpdate({ limit:10, offset: 0, timeout: 20000 }).then((result)=>{
+/*
+telegraClient.getUserProfilePhotos({ user_id: 839714887}).then(result => {
   console.log(result)
-})
+})*/
+
+/*
+telegraClient.getUpdate({ offset: 0, limit: 10, timeout: 2000 }).then(result => {
+  console.log(JSON.stringify(result))
+})*/
 
 /*
 telegraClient.sendMessage({
@@ -13,7 +19,9 @@ telegraClient.sendMessage({
   text: 'teste',
 })*/
 
-/*telegraClient.lauch()
+telegraClient.on('message', ctx => {
+  console.log(ctx)
+})
 telegraClient.command('/menu', () => {
   console.log('menu ativado')
 })
@@ -21,4 +29,4 @@ telegraClient.command('/analises', () => {
   console.log('analises ativado')
 })
 
-telegraClient.sendMessage()*/
+telegraClient.lauch()
