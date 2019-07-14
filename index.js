@@ -19,7 +19,7 @@ bot.sendMessage({
   text: 'teste',
 })*/
 
-bot.on('message', (update, ctx, onReply) => {
+bot.on('message', async (update, ctx, onReply) => {
   /*ctx.reply(
     'valeu',
     Keyboard('inline', [
@@ -32,25 +32,33 @@ bot.on('message', (update, ctx, onReply) => {
     ])
   )*/
 
-  console.log(update.message.text)
-  ctx.reply(`valeu ${update.message.from.first_name}`)
+  //console.log(update.message.text)
+  const reply = await ctx.reply(`valeu ${update.message.from.first_name}`)
 
   //context.ref() is required because is the reference to know when reply
-  onReply(ctx.ref(), (up, _ctx, _onReply) => {
+  onReply(ctx.ref(reply), async (up, _ctx, _onReply) => {
     console.log('me respondeu certinho 1')
-    _ctx.reply('reply 1')
+    const _reply = await _ctx.reply('reply 1')
 
-    _onReply(_ctx.ref(), (__, __ctx) => {
+    _onReply(_ctx.ref(_reply), (__, __ctx) => {
       console.log('certinho 2')
       __ctx.reply('reply 2')
     })
   })
 })
 
-/*
-bot.command('/menu', () => {
-  console.log('menu ativado')
+
+bot.command('/menu', async (update, ctx, onReply) => {
+  const reply = await ctx.reply('voce está on menu')
+
+
+  onReply(ctx.ref(reply), (_, _cxt)=>{
+    _cxt.reply('menu reply 1')
+  })
+
 })
+
+/*
 bot.command('/analises', () => {
   console.log('analises ativado')
 })*/
