@@ -47,15 +47,12 @@ bot.on('message', async (update, ctx, onReply) => {
   })
 })
 
-
 bot.command('/menu', async (update, ctx, onReply) => {
   const reply = await ctx.reply('voce está on menu')
 
-
-  onReply(ctx.ref(reply), (_, _cxt)=>{
+  onReply(ctx.ref(reply), (_, _cxt) => {
     _cxt.reply('menu reply 1')
   })
-
 })
 
 /*
