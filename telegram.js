@@ -287,18 +287,11 @@ class Bot extends Telegram {
     const length = this.listeners.reply.length
     let mustReply = false
 
-
     let toDelete = []
 
     for (let i = 0; i < length; i++) {
       const replyListener = this.listeners.reply[i]
 
-      console.log(`${typeof update.message.message_id} ${update.message.message_id} ${typeof replyListener.ref.message_id} ${replyListener.ref.message_id}`)
-      console.log(`${typeof update.message.chat.id} ${update.message.chat.id} ${typeof replyListener.ref.chat_id} ${replyListener.ref.chat_id}`)
-      console.log(`${typeof update.message.from.id} ${update.message.from.id} ${typeof replyListener.ref.from_id} ${replyListener.ref.from_id}`)
-      console.log(
-        this.updateMatchRef(update, replyListener.ref)
-      )
       if (update.message && replyListener.ref && this.updateMatchRef(update, replyListener.ref)) {
         mustReply = true
         replyListener.handdler(update, new Context({ ...this.props, update }), this.setReplyListener)
@@ -306,27 +299,27 @@ class Bot extends Telegram {
       }
     }
 
-    if(!mustReply){
+    if (!mustReply) {
       this.triggerMsgListener(update)
     }
 
     if (isLast) {
-      console.log('last')
-      const lastIndex = this.listeners.reply.length - 1
-      // on last index clear all not satisfied listeners from current chat
-      this.listeners.reply = this.listeners.reply.reduce((acc,listener)=>{
 
-        const isInDeleteList = toDelete.reduce((_acc, _ref)=>{
-          if( this.matchRef( listener.ref, _ref ) )
-          return acc
+      const lastIndex = this.listeners.reply.length - 1
+
+      this.listeners.reply = this.listeners.reply.reduce((acc, listener) => {
+        const isInDeleteList = toDelete.reduce((_acc, _ref) => {
+          if (this.matchRef(listener.ref, _ref)) return acc
         }, false)
 
-        if(!isInDeleteList){
+        if (!isInDeleteList) {
           acc.push(listener)
         }
 
         return acc
       }, [])
+
+
     }
   }
 
@@ -348,6 +341,26 @@ class Bot extends Telegram {
   stop() {
     this.started = false
     clearTimeout(this.pollingTimeout)
+  }
+
+  removeReplyListenersFromThisRef(ref){
+    if(ref){
+      const { chat_id, from_id } = ref
+      this.listeners.reply = this.listeners.reply.reduce((acc, l)=>{
+
+        if(
+          chat_id == l.ref.chat_id &&
+          from_id == l.ref.from_id
+        ){
+          console.log('removendo listenerS')
+        } else {
+          acc.push(l)
+        }
+
+
+        return acc
+      }, [])
+    }
   }
 
   triggerCallBackQueryListeners(data, update) {
@@ -387,12 +400,13 @@ class Bot extends Telegram {
   }
 
   setReplyListener(ref, handdler) {
-    console.log('setReplyListener')
+    //clear other listener for the user
+
+    this.removeReplyListenersFromThisRef(ref)
     this.listeners.reply.push({ ref, handdler })
   }
 
   on(listener, handdler) {
-    console.log(listener)
     if (this.listeners[listener] !== 'undefined') {
       this.listeners[listener] = handdler
     }
