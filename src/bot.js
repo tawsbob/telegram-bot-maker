@@ -44,9 +44,11 @@ class Bot extends Telegram {
 
     this.listeners = {
       message: null,
+      update: null,
       command: [],
       callback_query: [],
       reply: [],
+      middleware: [],
     }
 
     this.props = props
@@ -82,7 +84,10 @@ class Bot extends Telegram {
         this.offset = updates[updates.length - 1].update_id + 1
       }
 
-      if (updates) {
+      if (updates && updates.length) {
+        if (this.listeners.update) {
+          this.listeners.update(updates)
+        }
         this.check(updates)
       }
 
@@ -92,10 +97,19 @@ class Bot extends Telegram {
     }
   }
 
+  callMiddlewares(update) {
+    const length = this.listeners.middleware.length
+
+    for (let i = 0; i < length; i++) {
+      this.listeners.middleware[i](update)
+    }
+  }
+
   check(updates) {
     const length = updates.length
 
     for (let i = 0; i < length; i++) {
+      this.callMiddlewares(updates[i])
       this.checkUpdate(updates[i], updates.length - 1 == i)
     }
   }
@@ -246,6 +260,10 @@ class Bot extends Telegram {
     if (this.listeners[listener] !== 'undefined') {
       this.listeners[listener] = handdler
     }
+  }
+
+  use(handdler) {
+    this.listeners.middleware.push(handdler)
   }
 }
 

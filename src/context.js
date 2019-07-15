@@ -4,6 +4,7 @@ class Context extends Telegram {
   constructor(props) {
     const { update, onReply } = props
     super(props)
+    this.state = {}
     this.updates = [update]
     this._onReply = onReply
     this.lastMessage = null

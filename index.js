@@ -19,6 +19,17 @@ bot.sendMessage({
   text: 'teste',
 })*/
 
+/*
+bot.use((update)=>{
+  console.log('----')
+  console.log('update', update)
+  console.log('----')
+})
+
+bot.on('update', (updates)=>{
+  console.log(updates)
+})*/
+
 bot.on('message', async ctx => {
   /*ctx.reply(
     'valeu',
@@ -35,7 +46,7 @@ bot.on('message', async ctx => {
   //console.log(update.message.text)
 
   ctx
-    .reply(`valeu ${ctx.getLast().message.from.first_name}`)
+    .reply(`valeu ${ctx.getLastUpdate().message.from.first_name}`)
     .waitForReply(() => {
       console.log('reply aconteceu 1')
       ctx.reply('reply 1')
@@ -47,11 +58,9 @@ bot.on('message', async ctx => {
 })
 
 bot.command('/menu', async ctx => {
-  
   ctx.reply('voce está on menu').waitForReply(() => {
     ctx.reply('reply menu')
   })
-  
 })
 
 /*
