@@ -12,7 +12,7 @@ class Context extends Telegram {
   }
 
   getType() {
-    const { callback_query, message } = this.getLast()
+    const { callback_query, message } = this.getLastUpdate()
     if (callback_query) {
       return 'callback_query'
     }
@@ -28,12 +28,12 @@ class Context extends Telegram {
     this.updates.push(update)
   }
 
-  getLast() {
+  getLastUpdate() {
     return this.updates[this.updates.length - 1]
   }
 
   getInsideObj() {
-    return this.getLast()[this.getType()]
+    return this.getLastUpdate()[this.getType()]
   }
 
   getFromId() {
