@@ -20,7 +20,7 @@ bot.sendMessage({
 })*/
 
 bot.on('message', async (update, ctx, onReply) => {
-  /*ctx.reply(
+  ctx.reply(
     'valeu',
     Keyboard('inline', [
       bot.Buttons.CallBack('acao 1', 'id-acao-1', (cb, _ctx) => {
@@ -30,10 +30,10 @@ bot.on('message', async (update, ctx, onReply) => {
         _ctx.reply('id-acao-2')
       }),
     ])
-  )*/
+  )
 
   //console.log(update.message.text)
-  const reply = await ctx.reply(`valeu ${update.message.from.first_name}`)
+  /*const reply = await ctx.reply(`valeu ${update.message.from.first_name}`)
 
   //context.ref() is required because is the reference to know when reply
   onReply(ctx.ref(reply), async (up, _ctx, _onReply) => {
@@ -44,7 +44,7 @@ bot.on('message', async (update, ctx, onReply) => {
       console.log('certinho 2')
       __ctx.reply('reply 2')
     })
-  })
+  })*/
 })
 
 bot.command('/menu', async (update, ctx, onReply) => {

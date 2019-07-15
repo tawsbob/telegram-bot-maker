@@ -147,6 +147,14 @@ class Context extends Telegram {
     return null
   }
 
+  addUpdate(update){
+    this.updates.push(update)
+  }
+
+  getLast(){
+    return this.updates[ this.updates.length -1 ]
+  }
+
   getInsideObj() {
     const type = this.getType()
     return this.update[type]
@@ -157,7 +165,16 @@ class Context extends Telegram {
   }
 
   getChatId() {
-    return this.getInsideObj().chat.id
+    const { chat, message } = this.getInsideObj()
+    
+    if(chat){
+      return chat.id
+    }
+
+    if(message.chat.id){
+      return message.chat.id
+    }
+   
   }
 
   ref({ message_id }) {
@@ -250,7 +267,6 @@ class Bot extends Telegram {
   }
 
   checkUpdate(update, isLast) {
-    //console.log(JSON.stringify(update))
 
     if (update.callback_query) {
       const { data } = update.callback_query
@@ -400,8 +416,6 @@ class Bot extends Telegram {
   }
 
   setReplyListener(ref, handdler) {
-    //clear other listener for the user
-
     this.removeReplyListenersFromThisRef(ref)
     this.listeners.reply.push({ ref, handdler })
   }
