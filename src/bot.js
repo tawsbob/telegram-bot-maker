@@ -1,6 +1,5 @@
-const queryString = require('query-string')
-const client = require('./axio-client')
-const autoBind = require('auto-bind')
+const Context = require('./context')
+const Telegram = require('./telegram-api')
 
 class Buttons {
   constructor(bot) {
@@ -33,176 +32,10 @@ const Keyboard = (type = 'inline', buttons, opts) => {
   return { reply_markup: { keyboard: [buttons], ...options } }
 }
 
-class Telegram {
-  constructor({ token }) {
-    this.baseUrl = 'https://api.telegram.org/'
-    this.baseBotUrl = `${this.baseUrl}bot${token}/`
-    autoBind(this)
-  }
-
-  async apiCall({ method, params, endpoint }) {
-    try {
-      const url = this.baseBotUrl + endpoint
-      const response = await client[method](url, params)
-
-      //console.log(url)
-      //console.log(JSON.stringify(params))
-
-      if (response && response.data && response.data.result) {
-        return response.data.result
-      }
-
-      return null
-    } catch (e) {
-      console.warn(e)
-      return null
-    }
-  }
-
-  getUpdate(params) {
-    return this.apiCall({ endpoint: `getUpdates?${queryString.stringify(params)}`, method: 'get' })
-  }
-  getMe() {
-    return this.apiCall({ endpoint: 'getMe', method: 'get' })
-  }
-  sendMessage(params) {
-    return this.apiCall({ endpoint: 'sendMessage', method: 'post', params })
-  }
-  forwardMessage(params) {
-    return this.apiCall({ endpoint: 'forwardMessage', method: 'post', params })
-  }
-  sendPhoto(params) {
-    return this.apiCall({ endpoint: 'sendPhoto', method: 'post', params })
-  }
-  sendAudio(params) {
-    return this.apiCall({ endpoint: 'sendAudio', method: 'post', params })
-  }
-  sendDocument(params) {
-    return this.apiCall({ endpoint: 'sendDocument', method: 'post', params })
-  }
-  sendVideo(params) {
-    return this.apiCall({ endpoint: 'sendVideo', method: 'post', params })
-  }
-  sendAnimation(params) {
-    return this.apiCall({ endpoint: 'sendAnimation', method: 'post', params })
-  }
-  sendVoice(params) {
-    return this.apiCall({ endpoint: 'sendVoice', method: 'post', params })
-  }
-  sendVideoNote(params) {
-    return this.apiCall({ endpoint: 'sendVideoNote', method: 'post', params })
-  }
-  sendMediaGroup(params) {
-    return this.apiCall({ endpoint: 'sendMediaGroup', method: 'post', params })
-  }
-
-  sendLocation(params) {
-    return this.apiCall({ endpoint: 'sendLocation', method: 'post', params })
-  }
-
-  editMessageLiveLocation(params) {
-    return this.apiCall({ endpoint: 'editMessageLiveLocation', method: 'post', params })
-  }
-
-  stopMessageLiveLocation(params) {
-    return this.apiCall({ endpoint: 'stopMessageLiveLocation', method: 'post', params })
-  }
-
-  sendVenue(params) {
-    return this.apiCall({ endpoint: 'sendVenue', method: 'post', params })
-  }
-
-  sendContact(params) {
-    return this.apiCall({ endpoint: 'sendContact', method: 'post', params })
-  }
-
-  sendPoll(params) {
-    return this.apiCall({ endpoint: 'sendPoll', method: 'post', params })
-  }
-  sendChatAction(params) {
-    return this.apiCall({ endpoint: 'sendChatAction', method: 'post', params })
-  }
-
-  getUserProfilePhotos(params) {
-    return this.apiCall({ endpoint: `getUserProfilePhotos?${queryString.stringify(params)}`, method: 'get' })
-  }
-}
-
-class Context extends Telegram {
-  constructor(props) {
-    super(props)
-    this.update = props.update
-  }
-
-  getType() {
-    const { callback_query, message } = this.update
-    if (callback_query) {
-      return 'callback_query'
-    }
-
-    if (message) {
-      return 'message'
-    }
-
-    return null
-  }
-
-  addUpdate(update){
-    this.updates.push(update)
-  }
-
-  getLast(){
-    return this.updates[ this.updates.length -1 ]
-  }
-
-  getInsideObj() {
-    const type = this.getType()
-    return this.update[type]
-  }
-
-  getFromId() {
-    return this.getInsideObj().from.id
-  }
-
-  getChatId() {
-    const { chat, message } = this.getInsideObj()
-    
-    if(chat){
-      return chat.id
-    }
-
-    if(message.chat.id){
-      return message.chat.id
-    }
-   
-  }
-
-  ref({ message_id }) {
-    //new error if not message_id
-
-    return {
-      message_id: message_id,
-      chat_id: this.getChatId(),
-      from_id: this.getFromId(),
-    }
-  }
-
-  contextParams(params) {
-    return {
-      chat_id: this.getChatId(),
-      ...params,
-    }
-  }
-
-  reply(text, params) {
-    return this.sendMessage(this.contextParams({ text, ...params }))
-  }
-}
-
 class Bot extends Telegram {
   constructor(props) {
     super(props)
-    const { token, polling = true } = props
+    const { polling = true } = props
 
     this.polling = polling
     this.pollingTimeout = null
@@ -221,6 +54,7 @@ class Bot extends Telegram {
 
     this.Buttons = new Buttons(this)
     this.Keyboard = Keyboard
+    this.onReply = this.setReplyListener.bind(this)
   }
 
   lauch() {
@@ -267,7 +101,6 @@ class Bot extends Telegram {
   }
 
   checkUpdate(update, isLast) {
-
     if (update.callback_query) {
       const { data } = update.callback_query
       this.triggerCallBackQueryListeners(data, update)
@@ -310,7 +143,8 @@ class Bot extends Telegram {
 
       if (update.message && replyListener.ref && this.updateMatchRef(update, replyListener.ref)) {
         mustReply = true
-        replyListener.handdler(update, new Context({ ...this.props, update }), this.setReplyListener)
+        replyListener.handdler()
+        replyListener.addUpdate(update)
         toDelete.push(replyListener.ref)
       }
     }
@@ -320,7 +154,6 @@ class Bot extends Telegram {
     }
 
     if (isLast) {
-
       const lastIndex = this.listeners.reply.length - 1
 
       this.listeners.reply = this.listeners.reply.reduce((acc, listener) => {
@@ -334,8 +167,6 @@ class Bot extends Telegram {
 
         return acc
       }, [])
-
-
     }
   }
 
@@ -359,20 +190,15 @@ class Bot extends Telegram {
     clearTimeout(this.pollingTimeout)
   }
 
-  removeReplyListenersFromThisRef(ref){
-    if(ref){
+  removeReplyListenersFromThisRef(ref) {
+    if (ref) {
       const { chat_id, from_id } = ref
-      this.listeners.reply = this.listeners.reply.reduce((acc, l)=>{
-
-        if(
-          chat_id == l.ref.chat_id &&
-          from_id == l.ref.from_id
-        ){
+      this.listeners.reply = this.listeners.reply.reduce((acc, l) => {
+        if (chat_id == l.ref.chat_id && from_id == l.ref.from_id) {
           console.log('removendo listenerS')
         } else {
           acc.push(l)
         }
-
 
         return acc
       }, [])
@@ -383,18 +209,14 @@ class Bot extends Telegram {
     const length = this.listeners.callback_query.length
     for (let i = 0; i < length; i++) {
       if (this.listeners.callback_query[i].data === data) {
-        this.listeners.callback_query[i].handdler(
-          update.callback_query,
-          new Context({ ...this.props, update }),
-          this.setReplyListener
-        )
+        this.listeners.callback_query[i].handdler(new Context({ ...this.props, update, onReply: this.onReply }))
       }
     }
   }
 
   triggerMsgListener(update) {
     if (this.listeners.message) {
-      this.listeners.message(update, new Context({ ...this.props, update }), this.setReplyListener)
+      this.listeners.message(new Context({ ...this.props, update, onReply: this.onReply }))
     }
   }
 
@@ -402,7 +224,7 @@ class Bot extends Telegram {
     const length = this.listeners.command.length
     for (let i = 0; i < length; i++) {
       if (this.listeners.command[i].command === command) {
-        this.listeners.command[i].handdler(update, new Context({ ...this.props, update }), this.setReplyListener)
+        this.listeners.command[i].handdler(new Context({ ...this.props, update, onReply: this.onReply }))
       }
     }
   }
@@ -415,9 +237,9 @@ class Bot extends Telegram {
     this.listeners.callback_query.push({ data, handdler })
   }
 
-  setReplyListener(ref, handdler) {
+  setReplyListener(ref, handdler, addUpdate) {
     this.removeReplyListenersFromThisRef(ref)
-    this.listeners.reply.push({ ref, handdler })
+    this.listeners.reply.push({ ref, handdler, addUpdate })
   }
 
   on(listener, handdler) {

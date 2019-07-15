@@ -1,4 +1,4 @@
-const { Bot, Keyboard, Buttons } = require('./telegram')
+const { Bot, Keyboard, Buttons } = require('./src/bot')
 
 const token = '856565326:AAFk5l23CC_OUk3pUOSoGKeUiDj_StpzLjs'
 const bot = new Bot({ token })
@@ -19,8 +19,8 @@ bot.sendMessage({
   text: 'teste',
 })*/
 
-bot.on('message', async (update, ctx, onReply) => {
-  ctx.reply(
+bot.on('message', async ctx => {
+  /*ctx.reply(
     'valeu',
     Keyboard('inline', [
       bot.Buttons.CallBack('acao 1', 'id-acao-1', (cb, _ctx) => {
@@ -30,29 +30,28 @@ bot.on('message', async (update, ctx, onReply) => {
         _ctx.reply('id-acao-2')
       }),
     ])
-  )
+  )*/
 
   //console.log(update.message.text)
-  /*const reply = await ctx.reply(`valeu ${update.message.from.first_name}`)
 
-  //context.ref() is required because is the reference to know when reply
-  onReply(ctx.ref(reply), async (up, _ctx, _onReply) => {
-    console.log('me respondeu certinho 1')
-    const _reply = await _ctx.reply('reply 1')
-
-    _onReply(_ctx.ref(_reply), (__, __ctx) => {
-      console.log('certinho 2')
-      __ctx.reply('reply 2')
+  ctx
+    .reply(`valeu ${ctx.getLast().message.from.first_name}`)
+    .waitForReply(() => {
+      console.log('reply aconteceu 1')
+      ctx.reply('reply 1')
     })
-  })*/
+    .waitForReply(() => {
+      console.log('reply aconteceu 2')
+      ctx.reply('reply 2')
+    })
 })
 
-bot.command('/menu', async (update, ctx, onReply) => {
+bot.command('/menu', async ctx => {
   const reply = await ctx.reply('voce está on menu')
 
-  onReply(ctx.ref(reply), (_, _cxt) => {
+  /*onReply(ctx.ref(reply), (_, _cxt) => {
     _cxt.reply('menu reply 1')
-  })
+  })*/
 })
 
 /*
