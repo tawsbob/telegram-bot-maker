@@ -31,7 +31,7 @@ bot.on('update', (updates)=>{
 })*/
 
 bot.on('message', async ctx => {
-  ctx.reply(
+  /*ctx.reply(
     'valeu',
     Keyboard('inline', [
       bot.Buttons.CallBack('acao 1', 'id-acao-1', () => {
@@ -41,11 +41,11 @@ bot.on('message', async ctx => {
         ctx.reply('id-acao-2')
       }),
     ])
-  )
+  )*/
 
   //console.log(update.message.text)
 
-  /*ctx
+  ctx
     .reply('Quer uma foto?')
     .waitForReply(() => {
 
@@ -62,7 +62,7 @@ bot.on('message', async ctx => {
     .waitForReply(() => {
       console.log('reply aconteceu 2')
       ctx.reply('reply 2')
-    })*/
+    })
 })
 
 bot.command('/menu', async ctx => {
