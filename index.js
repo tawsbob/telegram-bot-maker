@@ -31,30 +31,38 @@ bot.on('update', (updates)=>{
 })*/
 
 bot.on('message', async ctx => {
-  /*ctx.reply(
+  ctx.reply(
     'valeu',
     Keyboard('inline', [
-      bot.Buttons.CallBack('acao 1', 'id-acao-1', (cb, _ctx) => {
-        _ctx.reply('id-acao-1')
+      bot.Buttons.CallBack('acao 1', 'id-acao-1', () => {
+        ctx.reply('id-acao-1')
       }),
-      bot.Buttons.CallBack('acao 2', 'id-acao-2', (cb, _ctx) => {
-        _ctx.reply('id-acao-2')
+      bot.Buttons.CallBack('acao 2', 'id-acao-2', () => {
+        ctx.reply('id-acao-2')
       }),
     ])
-  )*/
+  )
 
   //console.log(update.message.text)
 
-  ctx
-    .reply(`valeu ${ctx.getLastUpdate().message.from.first_name}`)
+  /*ctx
+    .reply('Quer uma foto?')
     .waitForReply(() => {
-      console.log('reply aconteceu 1')
-      ctx.reply('reply 1')
+
+      ctx.replyWithImage({
+        file:{
+          type: 'photo',
+          filename: 'bitcoin.jpg',
+          filePath: './bitcoin.jpg',
+          contentType: 'image/jpeg'
+        }
+      })
+
     })
     .waitForReply(() => {
       console.log('reply aconteceu 2')
       ctx.reply('reply 2')
-    })
+    })*/
 })
 
 bot.command('/menu', async ctx => {

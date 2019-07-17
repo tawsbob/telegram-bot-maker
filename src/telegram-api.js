@@ -1,6 +1,6 @@
 const queryString = require('query-string')
 const autoBind = require('auto-bind')
-const client = require('./axio-client')
+const client = require('./http-client')
 
 class Telegram {
   constructor({ token }) {
@@ -12,13 +12,10 @@ class Telegram {
   async apiCall({ method, params, endpoint }) {
     try {
       const url = this.baseBotUrl + endpoint
-      const response = await client[method](url, params)
+      const [httpResponse, response] = await client({ url, method, ...params })
 
-      //console.log(url)
-      //console.log(JSON.stringify(params))
-
-      if (response && response.data && response.data.result) {
-        return response.data.result
+      if (response && response.ok && response.result) {
+        return response.result
       }
 
       return null

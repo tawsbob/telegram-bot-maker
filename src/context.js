@@ -55,7 +55,6 @@ class Context extends Telegram {
 
   ref() {
     //new error if not message_id
-
     const message_id = this.lastMessage.message_id
 
     return {
@@ -66,14 +65,35 @@ class Context extends Telegram {
   }
 
   contextParams(params) {
+    const { file, ...rest } = params
+
+    if (file) {
+      return {
+        file,
+        body: {
+          chat_id: this.getChatId(),
+          ...rest,
+        },
+      }
+    }
+
     return {
-      chat_id: this.getChatId(),
-      ...params,
+      body: {
+        chat_id: this.getChatId(),
+        ...params,
+      },
     }
   }
 
   reply(text, params) {
     this.sendMessage(this.contextParams({ text, ...params }))
+      .then(this.afterBotReply)
+      .catch(console.warn)
+    return this
+  }
+
+  replyWithImage(params) {
+    this.sendPhoto(this.contextParams(params))
       .then(this.afterBotReply)
       .catch(console.warn)
     return this

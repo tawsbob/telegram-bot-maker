@@ -34,7 +34,6 @@
   },
   "dependencies": {
     "auto-bind": "^2.1.0",
-    "axios": "^0.19.0",
     "query-string": "^6.8.1"
   }
 }
