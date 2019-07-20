@@ -48,16 +48,15 @@ bot.on('message', async ctx => {
   ctx
     .reply('Quer uma foto?')
     .waitForReply(() => {
-
       ctx.replyWithImage({
-        file:{
+        file: {
           type: 'photo',
-          filename: 'bitcoin.jpg',
-          filePath: './bitcoin.jpg',
-          contentType: 'image/jpeg'
-        }
+          url: 'https://images.freeimages.com/images/large-previews/b31/butterfly-1392408.jpg',
+          //filePath: './bitcoin.jpg',
+        },
       })
 
+      //ctx.reply('testando sem foto')
     })
     .waitForReply(() => {
       console.log('reply aconteceu 2')

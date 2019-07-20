@@ -75,7 +75,6 @@ class Bot extends Telegram {
 
     try {
       const { offset } = this
-
       const updates = await this.getUpdate({ offset, limit: 600 })
 
       if (updates && updates.length) {
@@ -90,7 +89,6 @@ class Bot extends Telegram {
         }
         this.check(updates)
       }
-
       this.updateTrigger()
     } catch (e) {
       console.warn(e)

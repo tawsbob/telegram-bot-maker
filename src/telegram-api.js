@@ -12,10 +12,12 @@ class Telegram {
   async apiCall({ method, params, endpoint }) {
     try {
       const url = this.baseBotUrl + endpoint
-      const [httpResponse, response] = await client({ url, method, ...params })
+      const { body } = await client({ url, method, ...params })
 
-      if (response && response.ok && response.result) {
-        return response.result
+      const jsonResult = typeof body == 'string' ? JSON.parse(body) : body
+
+      if (jsonResult && jsonResult.result) {
+        return jsonResult.result
       }
 
       return null

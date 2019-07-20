@@ -1,4 +1,5 @@
-const request = require('request')
+const got = require('got')
+const FormData = require('form-data')
 const fs = require('fs')
 
 const defaults = {
@@ -6,36 +7,40 @@ const defaults = {
   json: true,
 }
 
+//arranjar um jeito de melhorar esses spreads
 const buildOptions = opts => {
   const { file, ...rest } = opts
 
-  //melhorar isso aqui
   if (file) {
-    const { filename, filePath, type, contentType } = file
-    const { method, url, body, ...aditional } = rest
-    const formData = {
-      [type]: fs.createReadStream(filePath),
-      ...body,
+    const { filePath, type, url } = file
+
+    if (filePath) {
+      const { method, url, body, ...aditional } = rest
+      const form = new FormData()
+      Object.keys(body).forEach(att => {
+        form.append(att, body[att])
+      })
+      form.append(type, fs.createReadStream(filePath))
+
+      return { method, url, ...aditional, ...defaults, body: form, json: undefined }
     }
 
-    return { method, url, ...aditional, ...defaults, formData }
+    if (url) {
+      const { method, url, body, ...aditional } = rest
+      const _body = {
+        [type]: url,
+        ...body,
+      }
+      return { method, url, ...aditional, ...defaults, body: _body }
+    }
   }
 
   return { ...opts, ...defaults }
 }
 
 const client = opts => {
-  return new Promise((resolve, reject) => {
-    const requestParams = buildOptions(opts)
-
-    request(requestParams, (err, httpResponse, body) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve([httpResponse, body])
-      }
-    })
-  })
+  const requestParams = buildOptions(opts)
+  return got(requestParams)
 }
 
 module.exports = client

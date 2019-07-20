@@ -34,7 +34,8 @@
   },
   "dependencies": {
     "auto-bind": "^2.1.0",
-    "query-string": "^6.8.1",
-    "request": "^2.88.0"
+    "form-data": "^2.5.0",
+    "got": "^9.6.0",
+    "query-string": "^6.8.1"
   }
 }

@@ -68,12 +68,6 @@ class Context extends Telegram {
     const { file, ...rest } = params
 
     if (file) {
-
-      //tratar quando o arquivo vem de um url
-      if(file.url){
-
-      }
-
       return {
         file,
         body: {
