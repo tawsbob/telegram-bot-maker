@@ -1,11 +1,39 @@
 const Context = require('./context')
 const Telegram = require('./telegram-api')
 
+const callbackDataStringify = (callback_id, params)=>`${callback_id}>${JSON.stringify(params)}`
+
+const callbackDataParse = (callback_data)=>{
+
+  const withParams = callback_data.split('>')
+  let params = null
+
+  console.log(callback_data, withParams)
+
+  if(withParams.length > 1){
+      params = JSON.parse(withParams[1])
+      return { callback_data: withParams[0], params }
+  }
+
+  return { callback_data, params }
+}
+
 class Buttons {
   constructor(bot) {
     this.bot = bot
   }
-  CallBack(text, callback_data, handdler, hide = false) {
+
+  withParams(params, callback_id){
+    if(params && typeof params === 'object'){
+      return callbackDataStringify(callback_id, params)
+    }
+    return callback_id
+  }
+
+  CallBack(text, callback_id, params, handdler, hide = false){
+
+    const callback_data = params ? this.withParams(params, callback_id) : callback_id
+
     if (handdler) {
       this.bot.setCallback_query(callback_data, handdler)
     }
@@ -221,7 +249,9 @@ class Bot extends Telegram {
     const length = this.listeners.callback_query.length
     for (let i = 0; i < length; i++) {
       if (this.listeners.callback_query[i].data === data) {
-        this.listeners.callback_query[i].handdler(new Context({ ...this.props, update, onReply: this.onReply }))
+        this.listeners.callback_query[i].handdler(
+          callbackDataParse(this.listeners.callback_query[i].data)
+        )
       }
     }
   }

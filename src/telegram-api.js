@@ -3,6 +3,7 @@ const autoBind = require('auto-bind')
 const client = require('./http-client')
 
 class Telegram {
+
   constructor({ token }) {
     this.baseUrl = 'https://api.telegram.org/'
     this.baseBotUrl = `${this.baseUrl}bot${token}/`
@@ -14,6 +15,7 @@ class Telegram {
       const url = this.baseBotUrl + endpoint
       const { body } = await client({ url, method, ...params })
 
+      //thats is necessary because GOT (http request module) cant work with JSON module when body is form data
       const jsonResult = typeof body == 'string' ? JSON.parse(body) : body
 
       if (jsonResult && jsonResult.result) {

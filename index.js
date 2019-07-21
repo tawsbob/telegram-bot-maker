@@ -31,21 +31,23 @@ bot.on('update', (updates)=>{
 })*/
 
 bot.on('message', async ctx => {
-  /*ctx.reply(
+  ctx.reply(
     'valeu',
     Keyboard('inline', [
-      bot.Buttons.CallBack('acao 1', 'id-acao-1', () => {
+      bot.Buttons.CallBack('acao 1', 'id-acao-1', { foo: "bar" }, (params) => {
+        console.log(params)
         ctx.reply('id-acao-1')
       }),
-      bot.Buttons.CallBack('acao 2', 'id-acao-2', () => {
+      bot.Buttons.CallBack('acao 2', 'id-acao-2', null, (params) => {
+        console.log(params)
         ctx.reply('id-acao-2')
       }),
     ])
-  )*/
+  )
 
   //console.log(update.message.text)
 
-  ctx
+  /*ctx
     .reply('Quer uma foto?')
     .waitForReply(() => {
       ctx.replyWithImage({
@@ -61,7 +63,7 @@ bot.on('message', async ctx => {
     .waitForReply(() => {
       console.log('reply aconteceu 2')
       ctx.reply('reply 2')
-    })
+    })*/
 })
 
 bot.command('/menu', async ctx => {
