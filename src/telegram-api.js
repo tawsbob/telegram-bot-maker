@@ -3,7 +3,6 @@ const autoBind = require('auto-bind')
 const client = require('./http-client')
 
 class Telegram {
-
   constructor({ token }) {
     this.baseUrl = 'https://api.telegram.org/'
     this.baseBotUrl = `${this.baseUrl}bot${token}/`
@@ -95,6 +94,10 @@ class Telegram {
 
   getUserProfilePhotos(params) {
     return this.apiCall({ endpoint: `getUserProfilePhotos?${queryString.stringify(params)}`, method: 'get' })
+  }
+
+  editMessageText(params){
+    return this.apiCall({ endpoint: `editMessageText`, method: 'post', params })
   }
 }
 

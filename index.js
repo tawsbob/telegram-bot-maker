@@ -31,16 +31,24 @@ bot.on('update', (updates)=>{
 })*/
 
 bot.on('message', async ctx => {
+
   ctx.reply(
     'valeu',
     Keyboard('inline', [
-      bot.Buttons.CallBack('acao 1', 'id-acao-1', { foo: "bar" }, (params) => {
+      bot.Buttons.CallBack('acao 1', 'id-acao-1', { foo: 'bar' }, params => {
         console.log(params)
-        ctx.reply('id-acao-1')
+        ctx.editMsgWithKeyboard('id-acao-1',
+          Keyboard('inline',[
+            bot.Buttons.CallBack('acao 1.1', 'id-acao-1-1', null, ()=>{
+              console.log('teste editar menu')
+            })
+          ])
+        )
+
       }),
-      bot.Buttons.CallBack('acao 2', 'id-acao-2', null, (params) => {
+      bot.Buttons.CallBack('acao 2', 'id-acao-2', null, params => {
         console.log(params)
-        ctx.reply('id-acao-2')
+        //ctx.reply('id-acao-2')
       }),
     ])
   )

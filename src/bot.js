@@ -1,18 +1,15 @@
 const Context = require('./context')
 const Telegram = require('./telegram-api')
 
-const callbackDataStringify = (callback_id, params)=>`${callback_id}>${JSON.stringify(params)}`
+const callbackDataStringify = (callback_id, params) => `${callback_id}>${JSON.stringify(params)}`
 
-const callbackDataParse = (callback_data)=>{
-
+const callbackDataParse = callback_data => {
   const withParams = callback_data.split('>')
   let params = null
 
-  console.log(callback_data, withParams)
-
-  if(withParams.length > 1){
-      params = JSON.parse(withParams[1])
-      return { callback_data: withParams[0], params }
+  if (withParams.length > 1) {
+    params = JSON.parse(withParams[1])
+    return { callback_data: withParams[0], params }
   }
 
   return { callback_data, params }
@@ -23,15 +20,14 @@ class Buttons {
     this.bot = bot
   }
 
-  withParams(params, callback_id){
-    if(params && typeof params === 'object'){
+  withParams(params, callback_id) {
+    if (params && typeof params === 'object') {
       return callbackDataStringify(callback_id, params)
     }
     return callback_id
   }
 
-  CallBack(text, callback_id, params, handdler, hide = false){
-
+  CallBack(text, callback_id, params, handdler, hide = false) {
     const callback_data = params ? this.withParams(params, callback_id) : callback_id
 
     if (handdler) {
@@ -141,6 +137,7 @@ class Bot extends Telegram {
   }
 
   checkUpdate(update, isLast) {
+
     if (update.callback_query) {
       const { data } = update.callback_query
       this.triggerCallBackQueryListeners(data, update)
@@ -235,7 +232,7 @@ class Bot extends Telegram {
       const { chat_id, from_id } = ref
       this.listeners.reply = this.listeners.reply.reduce((acc, l) => {
         if (chat_id == l.ref.chat_id && from_id == l.ref.from_id) {
-          console.log('removendo listenerS')
+          //console.log('removendo listenerS')
         } else {
           acc.push(l)
         }
@@ -249,9 +246,7 @@ class Bot extends Telegram {
     const length = this.listeners.callback_query.length
     for (let i = 0; i < length; i++) {
       if (this.listeners.callback_query[i].data === data) {
-        this.listeners.callback_query[i].handdler(
-          callbackDataParse(this.listeners.callback_query[i].data)
-        )
+        this.listeners.callback_query[i].handdler(callbackDataParse(this.listeners.callback_query[i].data))
       }
     }
   }

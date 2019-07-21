@@ -7,7 +7,7 @@ class Context extends Telegram {
     this.state = {}
     this.updates = [update]
     this._onReply = onReply
-    this.lastMessage = null
+    this.lastBotMsg = null
     this.replyListeners = []
     this._addUpdate = this.addUpdate.bind(this)
   }
@@ -55,7 +55,7 @@ class Context extends Telegram {
 
   ref() {
     //new error if not message_id
-    const message_id = this.lastMessage.message_id
+    const message_id = this.lastBotMsg.message_id
 
     return {
       message_id,
@@ -99,8 +99,22 @@ class Context extends Telegram {
     return this
   }
 
-  afterBotReply(lastMessage) {
-    this.lastMessage = lastMessage
+  editMsgWithKeyboard(text,params){
+
+    const { message_id } = this.lastBotMsg
+
+    this.editMessageText(
+      this.contextParams({
+        text,
+        message_id,
+        ...params
+      })
+    )
+  }
+
+  afterBotReply(lastBotMsg) {
+    this.lastBotMsg = lastBotMsg
+    console.log('lastBotMsg', lastBotMsg)
     this.triggerBotReply()
   }
 
