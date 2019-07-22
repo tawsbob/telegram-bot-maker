@@ -37,6 +37,7 @@ class Buttons {
 class Bot extends Telegram {
   constructor(props) {
     super(props)
+    
     const { polling = true } = props
 
     this.polling = polling
