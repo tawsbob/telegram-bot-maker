@@ -99,10 +99,9 @@ class Context extends Telegram {
     return this
   }
 
+  
   editMsgWithKeyboard(text,params){
-
     const { message_id } = this.lastBotMsg
-
     this.editMessageText(
       this.contextParams({
         text,
@@ -112,9 +111,16 @@ class Context extends Telegram {
     )
   }
 
+  buildMenu(MenuConfiguration){
+    
+  }
+
+  replyWithMenu(MenuConfiguration){
+
+  }
+
   afterBotReply(lastBotMsg) {
     this.lastBotMsg = lastBotMsg
-    console.log('lastBotMsg', lastBotMsg)
     this.triggerBotReply()
   }
 
