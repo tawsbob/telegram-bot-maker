@@ -37,7 +37,7 @@ class Buttons {
 class Bot extends Telegram {
   constructor(props) {
     super(props)
-    
+
     const { polling = true } = props
 
     this.polling = polling
@@ -45,6 +45,7 @@ class Bot extends Telegram {
     this.updateInterval = 500
     this.started = false
 
+    //criar esse cara aqui como orquestrador de eventos globalmente
     this.listeners = {
       message: null,
       update: null,

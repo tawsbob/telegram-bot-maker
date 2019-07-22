@@ -42,9 +42,8 @@ class UpdateHandler extends Telegram {
       }
 
       if (updates && updates.length) {
-        Events.emit('update',updates)
+        Events.emit('update', updates)
       }
-      
     } catch (e) {
       console.warn(e)
     }
