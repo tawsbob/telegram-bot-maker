@@ -99,25 +99,20 @@ class Context extends Telegram {
     return this
   }
 
-  
-  editMsgWithKeyboard(text,params){
+  editMsgWithKeyboard(text, params) {
     const { message_id } = this.lastBotMsg
     this.editMessageText(
       this.contextParams({
         text,
         message_id,
-        ...params
+        ...params,
       })
     )
   }
 
-  buildMenu(MenuConfiguration){
-    
-  }
+  buildMenu(MenuConfiguration) {}
 
-  replyWithMenu(MenuConfiguration){
-
-  }
+  replyWithMenu(MenuConfiguration) {}
 
   afterBotReply(lastBotMsg) {
     this.lastBotMsg = lastBotMsg

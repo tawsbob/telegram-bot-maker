@@ -1,10 +1,6 @@
 const Context = require('./context')
 const Telegram = require('./telegram-api')
-const {
-  callbackDataStringify,
-  callbackDataParse,
-  Keyboard
-} = require('./utils')
+const { callbackDataStringify, callbackDataParse, Keyboard } = require('./utils')
 
 class Buttons {
   constructor(bot) {
@@ -37,8 +33,6 @@ class Buttons {
     }
   }
 }
-
-
 
 class Bot extends Telegram {
   constructor(props) {
@@ -121,7 +115,6 @@ class Bot extends Telegram {
   }
 
   checkUpdate(update, isLast) {
-
     if (update.callback_query) {
       const { data } = update.callback_query
       this.triggerCallBackQueryListeners(data, update)

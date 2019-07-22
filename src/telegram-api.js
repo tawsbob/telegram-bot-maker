@@ -96,7 +96,7 @@ class Telegram {
     return this.apiCall({ endpoint: `getUserProfilePhotos?${queryString.stringify(params)}`, method: 'get' })
   }
 
-  editMessageText(params){
+  editMessageText(params) {
     return this.apiCall({ endpoint: `editMessageText`, method: 'post', params })
   }
 }
