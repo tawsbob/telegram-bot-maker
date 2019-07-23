@@ -1,9 +1,11 @@
 const autoBind = require('auto-bind')
 const Context = require('./context')
+const buildKeyboardAndButtons = require('./keyboards-and-buttons')
 const { callbackDataParse } = require('./utils')
 
 class Events {
   constructor() {
+    const { Keyboard, Buttons } = buildKeyboardAndButtons(this)
     this.listeners = {
       message: null,
       update: null,
@@ -13,6 +15,8 @@ class Events {
       middleware: [],
     }
     this.contextProps = null
+    this.Keyboard = Keyboard
+    this.Buttons = Buttons
     autoBind(this)
   }
 
@@ -64,7 +68,7 @@ class Events {
 
   triggerMsgListener(update) {
     if (this.listeners.message) {
-      this.listeners.message(new Context({ ...this.contextProps, update, setReplyListener: this.setReplyListener }))
+      this.listeners.message(this.newContex(update))
     }
   }
 
@@ -72,9 +76,8 @@ class Events {
     const length = this.listeners.command.length
     for (let i = 0; i < length; i++) {
       if (this.listeners.command[i].command === command) {
-        this.listeners.command[i].handdler(
-          new Context({ ...this.contextProps, update, setReplyListener: this.setReplyListener })
-        )
+        const { setReplyListener } = this
+        this.listeners.command[i].handdler(this.newContex(update))
       }
     }
   }
@@ -96,6 +99,12 @@ class Events {
     if (this.listeners[listener] !== 'undefined') {
       this.listeners[listener] = handdler
     }
+  }
+
+  newContex(update) {
+    const { setReplyListener, Keyboard, Buttons } = this
+    const contextProps = { ...this.contextProps, update, setReplyListener, Keyboard, Buttons }
+    return new Context(contextProps)
   }
 }
 

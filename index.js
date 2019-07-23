@@ -1,5 +1,4 @@
 const Bot = require('./src/bot')
-const { Keyboard, Buttons } = require('./src/keyboards-and-buttons')
 
 const token = '856565326:AAFk5l23CC_OUk3pUOSoGKeUiDj_StpzLjs'
 const bot = new Bot({ token })
@@ -28,6 +27,42 @@ bot.on('update', (updates)=>{
 })*/
 
 bot.on('message', async ctx => {
+  ctx.replyWithMenu({
+    text: 'Menu Experimental',
+    grid: '2x1',
+    options: [
+      {
+        label: 'create new account',
+        id: 'create-acc',
+        params: { 'my-custom-params': 'my-custom-value' },
+        onSelect: params => {
+          console.log('1', params)
+        },
+      },
+      {
+        label: 'menu 2',
+        id: 'menu-2',
+        params: { 'my-custom-params-2': 'my-custom-value-2' },
+        submenu: {
+          text: 'Textando submenu 2',
+          grid: '2x1',
+          options: [
+            {
+              label: 'menu 3',
+              id: 'menu-3',
+              params: { 'my-custom-params-3': 'my-custom-value-3' },
+            },
+            {
+              label: 'menu 4',
+              id: 'menu-4',
+              params: { 'my-custom-params-4': 'my-custom-value-4' },
+            },
+          ],
+        },
+      },
+    ],
+  })
+
   /*ctx.reply(
     'valeu',
     Keyboard('inline', [

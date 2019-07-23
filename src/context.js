@@ -1,9 +1,8 @@
 const Telegram = require('./telegram-api')
-const { Events } = global
 
 class Context extends Telegram {
   constructor(props) {
-    const { update, setReplyListener } = props
+    const { update, setReplyListener, Keyboard, Buttons } = props
     super(props)
     this.state = {}
     this.updates = [update]
@@ -11,6 +10,7 @@ class Context extends Telegram {
     this.replyListeners = []
     this._addUpdate = this.addUpdate.bind(this)
     this.setReplyListener = setReplyListener
+    ;(this.keyboard = Keyboard), (this.buttons = Buttons)
   }
 
   getType() {
@@ -111,9 +111,67 @@ class Context extends Telegram {
     )
   }
 
-  buildMenu(MenuConfiguration) {}
+  subMenuReply(text, menu) {
+    return () => {
+      this.editMsgWithKeyboard(text, menu)
+    }
+  }
 
-  replyWithMenu(MenuConfiguration) {}
+  buildButton(opts) {
+    const { label, id, params = null, onSelect, hide, submenu } = opts
+
+    if (submenu) {
+      const { text } = submenu
+      const _submenuMarkUp = this.buildMenu(submenu)
+      return this.buttons.CallBack(label, id, params, this.subMenuReply(text, _submenuMarkUp), hide)
+    }
+
+    return this.buttons.CallBack(label, id, params, onSelect, hide)
+  }
+
+  buildGrid(grid, options) {
+    const rowsAndCols = grid.split('x')
+    const rows = parseInt(rowsAndCols[0])
+    const cols = parseInt(rowsAndCols[1]) || 0
+
+    let filledRows = 0
+    let filledCols = 0
+
+    const elements = options.reduce((acc, opts, i) => {
+      if (filledRows < rows) {
+        if (!acc.length) {
+          acc.push([this.buildButton(opts)])
+        } else {
+          acc[filledCols].push(this.buildButton(opts))
+        }
+        filledRows++
+
+        if (filledRows == rows) {
+          filledRows = 0
+          filledCols++
+          if (i < options.length - 1) {
+            acc.push([])
+          }
+        }
+      }
+
+      return acc
+    }, [])
+
+    return elements
+  }
+
+  buildMenu(MenuConfiguration) {
+    const { options, grid } = MenuConfiguration
+    const menu = this.buildGrid(grid, options)
+    return this.keyboard('inline', menu)
+  }
+
+  replyWithMenu(MenuConfiguration) {
+    const { text } = MenuConfiguration
+    const markup = this.buildMenu(MenuConfiguration)
+    this.reply(text, markup)
+  }
 
   afterBotReply(lastBotMsg) {
     this.lastBotMsg = lastBotMsg
