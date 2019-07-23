@@ -1,16 +1,13 @@
-const { Bot, Keyboard, Buttons } = require('./src/bot')
+const Bot = require('./src/bot')
+const { Keyboard, Buttons } = require('./src/keyboards-and-buttons')
 
 const token = '856565326:AAFk5l23CC_OUk3pUOSoGKeUiDj_StpzLjs'
 const bot = new Bot({ token })
 
-/*
-bot.getUserProfilePhotos({ user_id: 839714887}).then(result => {
-  console.log(result)
-})*/
+//
 
-/*
-bot.getUpdate({ offset: 0, limit: 10, timeout: 2000 }).then(result => {
-  console.log(JSON.stringify(result))
+/*bot.getUserProfilePhotos({ user_id: 839714887}).then(result => {
+  console.log(result)
 })*/
 
 /*
@@ -31,39 +28,39 @@ bot.on('update', (updates)=>{
 })*/
 
 bot.on('message', async ctx => {
-  ctx.reply(
+  /*ctx.reply(
     'valeu',
     Keyboard('inline', [
-      bot.Buttons.CallBack('acao 1', 'id-acao-1', { foo: 'bar' }, params => {
+      Buttons.CallBack('acao 1', 'id-acao-1', { foo: 'bar' }, params => {
         console.log(params)
         ctx.editMsgWithKeyboard(
           'id-acao-1',
           Keyboard('inline', [
-            bot.Buttons.CallBack('acao 1.1', 'id-acao-1-1', null, () => {
+            Buttons.CallBack('acao 1.1', 'id-acao-1-1', null, () => {
               console.log('teste editar menu')
             }),
           ])
         )
       }),
-      bot.Buttons.CallBack('acao 2', 'id-acao-2', null, params => {
+      Buttons.CallBack('acao 2', 'id-acao-2', null, params => {
         console.log(params)
         //ctx.reply('id-acao-2')
       }),
     ])
-  )
-
-  //console.log(update.message.text)
-
+  )*/
   /*ctx
     .reply('Quer uma foto?')
     .waitForReply(() => {
-      ctx.replyWithImage({
+
+      ctx.reply({
         file: {
           type: 'photo',
           url: 'https://images.freeimages.com/images/large-previews/b31/butterfly-1392408.jpg',
           //filePath: './bitcoin.jpg',
         },
       })
+
+
 
       //ctx.reply('testando sem foto')
     })

@@ -1,15 +1,16 @@
 const Telegram = require('./telegram-api')
+const { Events } = global
 
 class Context extends Telegram {
   constructor(props) {
-    const { update, onReply } = props
+    const { update, setReplyListener } = props
     super(props)
     this.state = {}
     this.updates = [update]
-    this._onReply = onReply
     this.lastBotMsg = null
     this.replyListeners = []
     this._addUpdate = this.addUpdate.bind(this)
+    this.setReplyListener = setReplyListener
   }
 
   getType() {
@@ -121,7 +122,7 @@ class Context extends Telegram {
 
   triggerBotReply() {
     if (this.replyListeners.length) {
-      this._onReply(this.ref(), this.replyListeners[0], this._addUpdate)
+      this.setReplyListener(this.ref(), this.replyListeners[0], this._addUpdate)
       this.clearFirstReplyListener()
     }
   }

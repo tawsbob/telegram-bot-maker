@@ -12,17 +12,7 @@ const callbackDataParse = callback_data => {
   return { callback_data, params }
 }
 
-const Keyboard = (type = 'inline', buttons, opts) => {
-  if (type === 'inline') {
-    return { reply_markup: { inline_keyboard: [buttons] } }
-  }
-
-  const options = opts ? opts : { resize_keyboard: true, one_time_keyboard: true }
-  return { reply_markup: { keyboard: [buttons], ...options } }
-}
-
 module.exports = {
   callbackDataStringify,
   callbackDataParse,
-  Keyboard,
 }
