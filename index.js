@@ -46,16 +46,32 @@ bot.on('message', async ctx => {
         submenu: {
           text: 'Textando submenu 2',
           grid: '2x1',
+          backButton: {
+            label: 'Back to main menu',
+            id: 'back-to-main',
+          },
           options: [
             {
               label: 'menu 3',
               id: 'menu-3',
-              params: { 'my-custom-params-3': 'my-custom-value-3' },
             },
             {
               label: 'menu 4',
               id: 'menu-4',
-              params: { 'my-custom-params-4': 'my-custom-value-4' },
+              submenu: {
+                text: 'Textando submenu 3',
+                grid: '1x1',
+                backButton: {
+                  label: 'Back to prevLevel',
+                  id: 'back-to-prev-level',
+                },
+                options: [
+                  {
+                    label: 'menu 5',
+                    id: 'menu-5',
+                  },
+                ],
+              },
             },
           ],
         },
