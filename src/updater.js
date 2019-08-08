@@ -6,7 +6,7 @@ class Updater extends Telegram {
   constructor(props) {
     super(props)
     this.pollingTimeout = null
-    this.updateInterval = 500
+    this.updateInterval = 100
     this.started = false
     this.offset = 0
   }
@@ -40,7 +40,7 @@ class Updater extends Telegram {
         this.offset = updates[updates.length - 1].update_id + 1
       }
 
-      console.log(updates)
+      //console.log(updates)
 
       if (updates && updates.length) {
         Events.onUpdate(updates)

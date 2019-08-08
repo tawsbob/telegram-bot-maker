@@ -6,7 +6,7 @@ class Context extends Telegram {
     super(props)
     this.state = {}
     this.updates = [update]
-    this.lastBotMsg = null
+    this.lastBotMsg = []
     this.replyListeners = []
     this._addUpdate = this.addUpdate.bind(this)
     this.setReplyListener = setReplyListener
@@ -54,9 +54,13 @@ class Context extends Telegram {
     }
   }
 
+  getLastBotMsg() {
+    return this.lastBotMsg[this.lastBotMsg.length - 1]
+  }
+
   ref() {
     //new error if not message_id
-    const message_id = this.lastBotMsg.message_id
+    const { message_id } = this.getLastBotMsg()
 
     return {
       message_id,
@@ -101,7 +105,7 @@ class Context extends Telegram {
   }
 
   editMsgWithKeyboard(text, params) {
-    const { message_id } = this.lastBotMsg
+    const { message_id } = this.getLastBotMsg()
     this.editMessageText(
       this.contextParams({
         text,
@@ -109,10 +113,18 @@ class Context extends Telegram {
         ...params,
       })
     )
+      .then(this.afterBotReply)
+      .catch(console.warn)
+    return this
   }
 
   backClick() {
-    const { text, reply_markup } = this.lastBotMsg
+    //tem que ver como eu vou resolver isso aqui
+    this.lastBotMsg.map()
+
+    const offSetOneLastMsg = [this.lastBotMsg.length - 2]
+    const { text, reply_markup } = offSetOneLastMsg
+
     this.editMsgWithKeyboard(text, { reply_markup })
   }
 
@@ -189,7 +201,8 @@ class Context extends Telegram {
   }
 
   afterBotReply(lastBotMsg) {
-    this.lastBotMsg = lastBotMsg
+    this.lastBotMsg.push(lastBotMsg)
+    console.log(this.lastBotMsg.length)
     this.triggerBotReply()
   }
 
