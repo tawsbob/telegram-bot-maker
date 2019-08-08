@@ -111,13 +111,18 @@ class Context extends Telegram {
     )
   }
 
+  backClick() {
+    const { text, reply_markup } = this.lastBotMsg
+    this.editMsgWithKeyboard(text, { reply_markup })
+  }
+
   subMenuReply(text, menu) {
     return () => {
       this.editMsgWithKeyboard(text, menu)
     }
   }
 
-  buildButton(opts) {
+  buildButton(opts, isBack) {
     const { label, id, params = null, onSelect, hide, submenu } = opts
 
     if (submenu) {
@@ -126,10 +131,14 @@ class Context extends Telegram {
       return this.buttons.CallBack(label, id, params, this.subMenuReply(text, _submenuMarkUp), hide)
     }
 
+    if (isBack) {
+      return this.buttons.CallBack(label, id, params, this.backClick, hide)
+    }
+
     return this.buttons.CallBack(label, id, params, onSelect, hide)
   }
 
-  buildGrid(grid, options) {
+  buildGrid(grid, options, backButton) {
     const rowsAndCols = grid.split('x')
     const rows = parseInt(rowsAndCols[0])
     const cols = parseInt(rowsAndCols[1]) || 0
@@ -153,6 +162,12 @@ class Context extends Telegram {
             acc.push([])
           }
         }
+
+        if (i == options.length - 1) {
+          if (backButton) {
+            acc.push([this.buildButton(backButton, true)])
+          }
+        }
       }
 
       return acc
@@ -162,8 +177,8 @@ class Context extends Telegram {
   }
 
   buildMenu(MenuConfiguration) {
-    const { options, grid } = MenuConfiguration
-    const menu = this.buildGrid(grid, options)
+    const { options, grid, backButton } = MenuConfiguration
+    const menu = this.buildGrid(grid, options, backButton)
     return this.keyboard('inline', menu)
   }
 
