@@ -1,7 +1,7 @@
-const callbackDataStringify = (callback_id, params) => `${callback_id}>${JSON.stringify(params)}`
+const callbackDataStringify = (callback_id, params) => `${callback_id}|${JSON.stringify(params)}`
 
 const callbackDataParse = callback_data => {
-  const withParams = callback_data.split('>')
+  const withParams = callback_data.split('|')
   let params = null
 
   if (withParams.length > 1) {
