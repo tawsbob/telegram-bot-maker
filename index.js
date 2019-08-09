@@ -30,6 +30,7 @@ bot.on('message', async ctx => {
   ctx.replyWithMenu({
     text: 'Menu Experimental',
     grid: '2x1',
+    id: 'id-menu-1',
     options: [
       {
         label: 'create new account',
@@ -46,9 +47,10 @@ bot.on('message', async ctx => {
         submenu: {
           text: 'Textando submenu 2',
           grid: '2x1',
+          id: 'id-menu-2',
           backButton: {
             label: 'Back to main menu',
-            id: 'back-to-main',
+            id: 'id-menu-1',
           },
           options: [
             {
@@ -61,9 +63,10 @@ bot.on('message', async ctx => {
               submenu: {
                 text: 'Textando submenu 3',
                 grid: '1x1',
+                id: 'id-menu-3',
                 backButton: {
                   label: 'Back to prevLevel',
-                  id: 'back-to-prev-level',
+                  id: 'id-menu-2',
                 },
                 options: [
                   {

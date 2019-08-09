@@ -6,7 +6,8 @@ class Context extends Telegram {
     super(props)
     this.state = {}
     this.updates = [update]
-    this.lastBotMsg = []
+    this.lastBotMsg = null
+    this.menuMarkups = []
     this.replyListeners = []
     this._addUpdate = this.addUpdate.bind(this)
     this.setReplyListener = setReplyListener
@@ -54,13 +55,9 @@ class Context extends Telegram {
     }
   }
 
-  getLastBotMsg() {
-    return this.lastBotMsg[this.lastBotMsg.length - 1]
-  }
-
   ref() {
     //new error if not message_id
-    const { message_id } = this.getLastBotMsg()
+    const { message_id } = this.lastBotMsg
 
     return {
       message_id,
@@ -105,7 +102,7 @@ class Context extends Telegram {
   }
 
   editMsgWithKeyboard(text, params) {
-    const { message_id } = this.getLastBotMsg()
+    const { message_id } = this.lastBotMsg
     this.editMessageText(
       this.contextParams({
         text,
@@ -118,14 +115,17 @@ class Context extends Telegram {
     return this
   }
 
-  backClick() {
-    //tem que ver como eu vou resolver isso aqui
-    this.lastBotMsg.map()
+  backClick(opts) {
+    const menuId = opts.id
 
-    const offSetOneLastMsg = [this.lastBotMsg.length - 2]
-    const { text, reply_markup } = offSetOneLastMsg
+    const lastMenu = this.menuMarkups.reduce((acc, menu) => {
+      if (menu.id == menuId) acc = menu
+      return acc
+    }, null)
 
-    this.editMsgWithKeyboard(text, { reply_markup })
+    const { text, markup } = lastMenu
+
+    this.editMsgWithKeyboard(text, markup)
   }
 
   subMenuReply(text, menu) {
@@ -144,7 +144,15 @@ class Context extends Telegram {
     }
 
     if (isBack) {
-      return this.buttons.CallBack(label, id, params, this.backClick, hide)
+      return this.buttons.CallBack(
+        label,
+        id,
+        params,
+        () => {
+          this.backClick(opts)
+        },
+        hide
+      )
     }
 
     return this.buttons.CallBack(label, id, params, onSelect, hide)
@@ -189,9 +197,12 @@ class Context extends Telegram {
   }
 
   buildMenu(MenuConfiguration) {
-    const { options, grid, backButton } = MenuConfiguration
+    const { options, grid, backButton, text, id } = MenuConfiguration
     const menu = this.buildGrid(grid, options, backButton)
-    return this.keyboard('inline', menu)
+    const markup = this.keyboard('inline', menu)
+
+    this.menuMarkups.push({ text, id, markup })
+    return markup
   }
 
   replyWithMenu(MenuConfiguration) {
@@ -201,8 +212,7 @@ class Context extends Telegram {
   }
 
   afterBotReply(lastBotMsg) {
-    this.lastBotMsg.push(lastBotMsg)
-    console.log(this.lastBotMsg.length)
+    this.lastBotMsg = lastBotMsg
     this.triggerBotReply()
   }
 
