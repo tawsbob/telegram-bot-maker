@@ -90,14 +90,14 @@ class Context extends Telegram {
   reply(text, params) {
     this.sendMessage(this.contextParams({ text, ...params }))
       .then(this.afterBotReply)
-      .catch(console.warn)
+      .catch(this.onError)
     return this
   }
 
   replyWithImage(params) {
     this.sendPhoto(this.contextParams(params))
       .then(this.afterBotReply)
-      .catch(console.warn)
+      .catch(this.onError)
     return this
   }
 
@@ -111,7 +111,7 @@ class Context extends Telegram {
       })
     )
       .then(this.afterBotReply)
-      .catch(console.warn)
+      .catch(this.onError)
     return this
   }
 
@@ -235,6 +235,11 @@ class Context extends Telegram {
     this.replyListeners.push(listener)
     return this
   }
+
+  onError(err){
+    console.warn(err)
+  }
+
 }
 
 module.exports = Context

@@ -5,8 +5,9 @@ const { Events } = global
 class Updater extends Telegram {
   constructor(props) {
     super(props)
+    const {updateInterval } = props
     this.pollingTimeout = null
-    this.updateInterval = 100
+    this.updateInterval =  updateInterval || 350
     this.started = false
     this.offset = 0
   }
@@ -40,7 +41,7 @@ class Updater extends Telegram {
         this.offset = updates[updates.length - 1].update_id + 1
       }
 
-      //console.log(updates)
+
 
       if (updates && updates.length) {
         Events.onUpdate(updates)
@@ -105,7 +106,7 @@ class Updater extends Telegram {
 
       if (update.message && replyListener.ref && this.updateMatchRef(update, replyListener.ref)) {
         mustReply = true
-        replyListener.handdler()
+        replyListener.handdler(update)
         replyListener.addUpdate(update)
         toDelete.push(replyListener.ref)
       }
