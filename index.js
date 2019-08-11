@@ -123,17 +123,18 @@ bot.on('message', async ctx => {
 
 bot.command('/menu', async ctx => {
   ctx
-    .reply('whats is your first name?').waitForReply((userReply) => {
+    .reply('whats is your first name?')
+    .waitForReply(userReply => {
       const { message, update_id } = userReply
       //console.log(update_id, message.text, message.message_id)
       const firstName = message.text
       ctx.reply(`Nice ${firstName}, so whats is your last name?`)
-  })
-  .waitForReply((userReply) => {
-    const { message, update_id } = userReply
-    const lastName = message.text
-    console.log(lastName)
-  })
+    })
+    .waitForReply(userReply => {
+      const { message, update_id } = userReply
+      const lastName = message.text
+      console.log(lastName)
+    })
 })
 
 /*

@@ -5,9 +5,9 @@ const { Events } = global
 class Updater extends Telegram {
   constructor(props) {
     super(props)
-    const {updateInterval } = props
+    const { updateInterval } = props
     this.pollingTimeout = null
-    this.updateInterval =  updateInterval || 350
+    this.updateInterval = updateInterval || 350
     this.started = false
     this.offset = 0
   }
@@ -40,8 +40,6 @@ class Updater extends Telegram {
         //Must be greater by one than the highest among the identifiers of previously received updates
         this.offset = updates[updates.length - 1].update_id + 1
       }
-
-
 
       if (updates && updates.length) {
         Events.onUpdate(updates)

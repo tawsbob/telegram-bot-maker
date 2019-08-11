@@ -236,10 +236,9 @@ class Context extends Telegram {
     return this
   }
 
-  onError(err){
+  onError(err) {
     console.warn(err)
   }
-
 }
 
 module.exports = Context
