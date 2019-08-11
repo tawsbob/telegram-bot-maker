@@ -10,6 +10,7 @@ After try make may own bot with currents nodejs libraries ( Telegraf  and others
 - Uncaught exception
 - Bugs,  memory leaks
 - About weeks to accept pull request with bugfix
+- Very verbose to work listening to answers and creating buttons / menus
 
 
 ## Requirements
