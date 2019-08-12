@@ -1,4 +1,4 @@
-# telegram-bot-api
+# telegram-bot-maker
 
 A nodejs lightweight library wrapper to [telegram bot api](https://core.telegram.org/bots/api)
 
@@ -29,7 +29,7 @@ It's only for long polling bot, **Webhook** will be implemented soon. Feel free 
 
 ```javascript
 
-const Bot = require('telegram-bot-api')
+const Bot = require('telegram-bot-maker')
 
 const bot = new Bot({
     token: 'YOUR-BOT-TOKEN',  
@@ -82,7 +82,7 @@ Add listener to bot
 
 
 ## Wait For User reply
-![Wait for user reply](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/reply.gif?raw=true)
+![Wait for user reply](https://github.com/tawsbob/telegram-bot-maker/blob/master/docs/reply.gif?raw=true)
 
 ctx.waitForReply(handler)
 
@@ -108,7 +108,7 @@ bot.on('message', ctx => {
 
 ## Creating Menu
 
-![Menu 2x1](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/menu-exemple-1.png?raw=true)
+![Menu 2x1](https://github.com/tawsbob/telegram-bot-maker/blob/master/docs/menu-exemple-1.png?raw=true)
 
 ctx.replyWithMenu(MenuSettings)
 
@@ -145,7 +145,7 @@ bot.on('message', ctx => {
 ```
 
 ## Submenu
-![Menu 1x1](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/submenu-exemple.gif?raw=true)
+![Menu 1x1](https://github.com/tawsbob/telegram-bot-maker/blob/master/docs/submenu-exemple.gif?raw=true)
 
 ```javascript
 
@@ -203,7 +203,7 @@ bot.on('message', ctx => {
 
 ## Custom Inline Buttons
 
-![Custom inline btn](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/custom-inline-btns.gif?raw=true)
+![Custom inline btn](https://github.com/tawsbob/telegram-bot-maker/blob/master/docs/custom-inline-btns.gif?raw=true)
 
 ```javascript
 
@@ -229,7 +229,7 @@ bot.on('message', ctx => {
 
 ## Custom Buttons
 
-![Custom btn](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/custom-btns.gif?raw=true)
+![Custom btn](https://github.com/tawsbob/telegram-bot-maker/blob/master/docs/custom-btns.gif?raw=true)
 
 ```javascript
 
@@ -255,7 +255,7 @@ bot.on('message', ctx => {
 
 ## send Photos to user
 
-![Send Image](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/send-img.gif?raw=true)
+![Send Image](https://github.com/tawsbob/telegram-bot-maker/blob/master/docs/send-img.gif?raw=true)
 
 To send photos to user you must pass url or filePath param.
 
