@@ -84,6 +84,8 @@ Add listener to bot
 ## Wait For User reply
 ![Wait for user reply](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/reply.gif?raw=true)
 
+ctx.waitForReply(handler)
+
 ```javascript
 
 bot.on('message', ctx => {
@@ -107,6 +109,8 @@ bot.on('message', ctx => {
 ## Creating Menu
 
 ![Menu 2x1](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/menu-exemple-1.png?raw=true)
+
+ctx.replyWithMenu(MenuSettings)
 
 ```javascript
 
