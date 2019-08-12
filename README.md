@@ -35,7 +35,7 @@ bot.lauch()
 
 ```
 
-### Commands
+## Commands
 
 ```javascript
 
@@ -45,7 +45,7 @@ bot.command('/menu', ctx => {
 
 ```
 
-### Message
+## Message
 
 ```javascript
 
@@ -55,7 +55,7 @@ bot.on('message', ctx => {
 
 ```
 
-### Wait For User reply
+## Wait For User reply
 
 ```javascript
 
@@ -77,7 +77,7 @@ bot.on('message', ctx => {
 
 ```
 
-### Creating Menu
+## Creating Menu
 
 ![Menu 2x1](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/menu-exemple-1.png?raw=true)
 
@@ -111,6 +111,62 @@ bot.on('message', ctx => {
 
 ```
 
+## Submenu
+![Menu 1x1](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/submenu-exemple.gif?raw=true)
+
+```javascript
+
+bot.on('message', ctx => {
+  ctx.replyWithMenu({
+    text: 'Menu Level 0',
+    grid: '2x1',
+    id: 'id-menu-0',
+    options: [
+      {
+        label: 'Button 1',
+        id: 'btn-1',
+        params: { 'my-custom-params': 'my-custom-value' },
+        onSelect: params => {
+          console.log('Button 1 click', params)
+        },
+      },
+      {
+        label: 'Button 2',
+        id: 'btn-2',
+        onSelect: params => {
+          console.log('Button 2 click')
+        },
+        submenu: {
+          text: 'Menu Level 1',
+          grid: '1x1',
+          id: 'id-menu-1',
+          backButton: {
+            label: 'Back to level zero menu',
+            id: 'id-menu-0',
+          }, // Add at the bottom of grid a back button
+          options: [
+            {
+              label: 'Button 3',
+              id: 'btn-3',
+              onSelect: params => {
+                console.log('Button 3 click')
+              },
+            },
+            {
+              label: 'Button 4',
+              id: 'btn-4',
+              onSelect: params => {
+                console.log('Button 4 click')
+              },
+            },
+          ]
+        }
+      },
+    ],
+  })
+})
+
+```
 
 ## Notes
 All updates that remain when the bot is off will be bypassed, it will only react to updates that happen while it is alive, I choose for this architecture to prevent anomalous behavior.

@@ -60,6 +60,31 @@ bot.on('message', ctx => {
         onSelect: params => {
           console.log('Button 2 click')
         },
+        submenu: {
+          text: 'Menu Level 1',
+          grid: '1x1',
+          id: 'id-menu-1',
+          backButton: {
+            label: 'Back to level zero menu',
+            id: 'id-menu-0',
+          }, // Add at the bottom of grid a back button
+          options: [
+            {
+              label: 'Button 3',
+              id: 'btn-3',
+              onSelect: params => {
+                console.log('Button 3 click')
+              },
+            },
+            {
+              label: 'Button 4',
+              id: 'btn-4',
+              onSelect: params => {
+                console.log('Button 4 click')
+              },
+            },
+          ]
+        }
       },
     ],
   })
