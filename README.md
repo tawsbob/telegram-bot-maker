@@ -79,9 +79,33 @@ bot.on('message', ctx => {
 
 ### Creating Menu
 
+![Menu 2x1](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/menu-exemple-1.png?raw=true)
+
 ```javascript
 
 bot.on('message', ctx => {
+  ctx.replyWithMenu({
+    text: 'Menu Level 0', //Menu text
+    grid: '2x1',          //Menu Grid *Required
+    id: 'id-menu-0',      //Menu Id *Required
+    options: [
+      {
+        label: 'Button 1', //BUTTON LABEL *Required
+        id: 'btn-1',       //BUTTON ID *Required
+        params: { 'my-custom-params': 'my-custom-value' }, //If you want add params to the button
+        onSelect: params => {
+          console.log('Button 1 click', params)
+        },                //On User Click to the button
+      },
+      {
+        label: 'Button 2',
+        id: 'btn-2',
+        onSelect: params => {
+          console.log('Button 2 click')
+        },
+      },
+    ],
+  })
 
 })
 

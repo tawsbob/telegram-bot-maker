@@ -27,7 +27,6 @@ bot.on('update', (updates)=>{
 })*/
 
 bot.on('message', ctx => {
-
   /*ctx
     .reply('Qual seu primeiro nome?')
     .waitForReply(userReply => {
@@ -42,29 +41,28 @@ bot.on('message', ctx => {
       ctx.reply(`Seu nome completo é ${firstName} ${message.text}`)
     })*/
 
-
-    ctx.replyWithMenu({
-      text: 'Menu Level 0',
-      grid: '2x1',
-      id: 'id-menu-0',
-      options: [
-        {
-          label: 'Button 1',
-          id: 'btn-1',
-          params: { 'my-custom-params': 'my-custom-value' },
-          onSelect: params => {
-            console.log('Button 1 click', params)
-          },
+  ctx.replyWithMenu({
+    text: 'Menu Level 0',
+    grid: '2x1',
+    id: 'id-menu-0',
+    options: [
+      {
+        label: 'Button 1',
+        id: 'btn-1',
+        params: { 'my-custom-params': 'my-custom-value' },
+        onSelect: params => {
+          console.log('Button 1 click', params)
         },
-        {
-          label: 'Button 2',
-          id: 'btn-2',
-          onSelect: params => {
-            console.log('Button 2 click')
-          },
+      },
+      {
+        label: 'Button 2',
+        id: 'btn-2',
+        onSelect: params => {
+          console.log('Button 2 click')
         },
-      ],
-    })
+      },
+    ],
+  })
 
   /*ctx.replyWithMenu({
     text: 'Menu Level 0',

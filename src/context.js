@@ -129,7 +129,6 @@ class Context extends Telegram {
   backClick(opts) {
     const menuId = opts.id
 
-  
     const lastMenu = this.menuMarkups.reduce((acc, menu) => {
       if (menu.id == menuId) acc = menu
       return acc
