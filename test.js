@@ -1,8 +1,8 @@
-const Bot = require('./src/bot')
+const { Bot } = require('./src')
 
 const token = '856565326:AAFk5l23CC_OUk3pUOSoGKeUiDj_StpzLjs'
 const bot = new Bot({ token })
-
+console.log('aqui')
 //
 
 /*bot.getUserProfilePhotos({ user_id: 839714887}).then(result => {
@@ -26,8 +26,22 @@ bot.on('update', (updates)=>{
   console.log(updates)
 })*/
 
-bot.on('message', async ctx => {
-  ctx.replyWithMenu({
+bot.on('message', ctx => {
+  ctx
+    .reply('Qual seu primeiro nome?')
+    .waitForReply(userReply => {
+      const { message } = userReply
+      ctx.setState({ firstName: message.text })
+      ctx.reply(`Legal ${message.text}, qual seu segundo nome?`)
+    })
+    .waitForReply(userReply => {
+      const { message } = userReply
+      const { firstName } = ctx.getState()
+
+      ctx.reply(`Seu nome completo é ${firstName} ${message.text}`)
+    })
+
+  /*ctx.replyWithMenu({
     text: 'Menu Experimental',
     grid: '2x1',
     id: 'id-menu-1',
@@ -80,7 +94,7 @@ bot.on('message', async ctx => {
         },
       },
     ],
-  })
+  })*/
 
   /*ctx.reply(
     'valeu',

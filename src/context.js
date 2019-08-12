@@ -14,6 +14,17 @@ class Context extends Telegram {
     ;(this.keyboard = Keyboard), (this.buttons = Buttons)
   }
 
+  setState(stateProps) {
+    this.state = {
+      ...this.state,
+      ...stateProps,
+    }
+  }
+
+  getState() {
+    return this.state
+  }
+
   getType() {
     const { callback_query, message } = this.getLastUpdate()
     if (callback_query) {
