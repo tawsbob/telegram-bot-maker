@@ -5,9 +5,10 @@ const { Events } = global
 class Updater extends Telegram {
   constructor(props) {
     super(props)
-    const { updateInterval } = props
+    const { updateInterval, updateLimit } = props
     this.pollingTimeout = null
     this.updateInterval = updateInterval || 350
+    this.updateLimit = updateLimit || 100
     this.started = false
     this.offset = 0
   }
@@ -33,9 +34,9 @@ class Updater extends Telegram {
 
     try {
       const { offset } = this
-      const updates = await this.getUpdate({ offset, limit: 600 })
+      const updates = await this.getUpdate({ offset, limit: this.updateLimit })
 
-      const isInitial = (this.offset === 0)
+      const isInitial = this.offset === 0
 
       if (updates && updates.length) {
         //https://core.telegram.org/bots/api#getting-updates
@@ -44,13 +45,12 @@ class Updater extends Telegram {
       }
 
       //ignore all updates while bot is offline to prevent bugs
-      if(!isInitial){
+      if (!isInitial) {
         if (updates && updates.length) {
           Events.onUpdate(updates)
           this.check(updates)
         }
       }
-
 
       this.updateTrigger()
     } catch (e) {
