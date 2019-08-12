@@ -11,6 +11,7 @@ class Updater extends Telegram {
     this.updateLimit = updateLimit || 100
     this.started = false
     this.offset = 0
+    this.isInitial = true
   }
 
   stop() {
@@ -36,8 +37,6 @@ class Updater extends Telegram {
       const { offset } = this
       const updates = await this.getUpdate({ offset, limit: this.updateLimit })
 
-      const isInitial = this.offset === 0
-
       if (updates && updates.length) {
         //https://core.telegram.org/bots/api#getting-updates
         //Must be greater by one than the highest among the identifiers of previously received updates
@@ -45,12 +44,14 @@ class Updater extends Telegram {
       }
 
       //ignore all updates while bot is offline to prevent bugs
-      if (!isInitial) {
+      if (!this.isInitial) {
         if (updates && updates.length) {
           Events.onUpdate(updates)
           this.check(updates)
         }
       }
+
+      this.isInitial = false
 
       this.updateTrigger()
     } catch (e) {
