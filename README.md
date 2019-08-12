@@ -35,6 +35,38 @@ bot.lauch()
 
 ```
 
+## Bot Methods
+
+#### lauch
+Start the bot
+```javascript
+  bot.lauch()
+```
+
+#### stop
+Stop the bot
+```javascript
+  bot.stop()
+```
+
+#### command
+Add listener to command
+```javascript
+  // * Is Required
+  //<String> command *
+  //<Function> handler *
+  bot.command(command, handler)
+```
+
+#### on
+Add listener to bot
+```javascript
+  // * Is Required
+  //<String> listener * 'message' || 'update'
+  //<Function> handler *
+  bot.on(listener, handler)
+```
+
 ## Commands
 
 ```javascript
