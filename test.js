@@ -27,21 +27,15 @@ bot.on('update', (updates)=>{
 })*/
 
 bot.on('message', ctx => {
-
-
-  ctx
-    .reply('What a photo?')
-    .waitForReply(() => {
-
-      ctx.replyWithImage({
-        file: {
-          type: 'photo',
-          //url: 'https://images.freeimages.com/images/large-previews/b31/butterfly-1392408.jpg',
-          filePath: './docs/menu-exemple-1.png',
-        },
-      })
-
+  ctx.reply('What a photo?').waitForReply(() => {
+    ctx.replyWithImage({
+      file: {
+        type: 'photo',
+        //url: 'https://images.freeimages.com/images/large-previews/b31/butterfly-1392408.jpg',
+        filePath: './docs/menu-exemple-1.png',
+      },
     })
+  })
 
   /*ctx.reply(
     'Testing custom BTNS',

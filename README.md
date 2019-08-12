@@ -28,7 +28,7 @@ const Bot = require('telegram-bot-api')
 
 const bot = new Bot({
     token: 'YOUR-BOT-TOKEN',  
-    updateInterval: 500, // time that bot will
+    updateInterval: 500, // interval that bot will looking for updates
   })
 
 bot.lauch()
@@ -221,9 +221,11 @@ bot.on('message', ctx => {
 
 ```
 
-## send Files to user
+## send Photos to user
 
 ![Send Image](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/send-img.gif?raw=true)
+
+To send photos to user you must pass url or filePath param.
 
 ```javascript
 ctx
@@ -231,7 +233,7 @@ ctx
   .waitForReply(() => {
     ctx.replyWithImage({
       file: {
-        type: 'photo',
+        type: 'photo', // Is required
         //url: 'https://images.freeimages.com/images/large-previews/b31/butterfly-1392408.jpg',
         filePath: './docs/menu-exemple-1.png',
       },
