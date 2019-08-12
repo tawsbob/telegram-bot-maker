@@ -26,7 +26,7 @@ class Updater extends Telegram {
     this.pollingTimeout = setTimeout(this.lookingForUpdates, this.updateInterval)
   }
 
-  async lookingForUpdates() {
+  async lookingForUpdates(isInitial) {
     if (!this.started) {
       return
     }
@@ -34,17 +34,23 @@ class Updater extends Telegram {
     try {
       const { offset } = this
       const updates = await this.getUpdate({ offset, limit: 600 })
-      console.log(updates)
+
+      const isInitial = (this.offset === 0)
+
       if (updates && updates.length) {
         //https://core.telegram.org/bots/api#getting-updates
         //Must be greater by one than the highest among the identifiers of previously received updates
         this.offset = updates[updates.length - 1].update_id + 1
       }
 
-      if (updates && updates.length) {
-        Events.onUpdate(updates)
-        this.check(updates)
+      //ignore all updates while bot is offline to prevent bugs
+      if(!isInitial){
+        if (updates && updates.length) {
+          Events.onUpdate(updates)
+          this.check(updates)
+        }
       }
+
 
       this.updateTrigger()
     } catch (e) {
