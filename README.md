@@ -60,7 +60,7 @@ Add listener to command
   bot.command(command, handler)
 
   //exemple
-  bot.command('/menu', ctx => {
+  bot.command('/menu', (ctx, update) => {
     ctx.reply('There is a reply to menu command')
   })
 
@@ -74,7 +74,7 @@ Add listener to bot
   bot.on(listener, handler)
 
   //exemple
-  bot.on('message', ctx => {
+  bot.on('message', (ctx, update) => {
     ctx.reply('A reply to your msg')
   })
 
@@ -88,7 +88,7 @@ ctx.waitForReply(handler)
 
 ```javascript
 
-bot.on('message', ctx => {
+bot.on('message', (ctx, update) => {
 
   ctx
     .reply('Whats is your first name?')
@@ -114,7 +114,7 @@ ctx.replyWithMenu(MenuSettings)
 
 ```javascript
 
-bot.on('message', ctx => {
+bot.on('message', (ctx, update) => {
   ctx.replyWithMenu({
     text: 'Menu Level 0',   //<String> text                       ( Text of message )
     grid: '2x1',            //<String> grid *Required 'ColsxRow'  ( Grid of the Menu )
@@ -149,7 +149,7 @@ bot.on('message', ctx => {
 
 ```javascript
 
-bot.on('message', ctx => {
+bot.on('message', (ctx, update) => {
   ctx.replyWithMenu({
     text: 'Menu Level 0',
     grid: '2x1',
@@ -207,7 +207,7 @@ bot.on('message', ctx => {
 
 ```javascript
 
-bot.on('message', ctx => {
+bot.on('message', (ctx, update) => {
   ctx.reply(
     'Testing custom BTNS',
     ctx.keyboard('inline', [
@@ -233,7 +233,7 @@ bot.on('message', ctx => {
 
 ```javascript
 
-bot.on('message', ctx => {
+bot.on('message', (ctx, update) => {
   ctx.reply(
     'Testing custom BTNS',
     ctx.keyboard(null, [ //Just the inline params changed

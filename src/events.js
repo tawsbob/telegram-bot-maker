@@ -68,7 +68,7 @@ class Events {
 
   triggerMsgListener(update) {
     if (this.listeners.message) {
-      this.listeners.message(this.newContex(update))
+      this.listeners.message(this.newContex(update), update)
     }
   }
 
@@ -77,7 +77,7 @@ class Events {
     for (let i = 0; i < length; i++) {
       if (this.listeners.command[i].command === command) {
         const { setReplyListener } = this
-        this.listeners.command[i].handdler(this.newContex(update))
+        this.listeners.command[i].handdler(this.newContex(update), update)
       }
     }
   }
