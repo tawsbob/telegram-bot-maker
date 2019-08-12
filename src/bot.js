@@ -14,7 +14,7 @@ class Bot {
   }
 
   stop() {
-    Updater.stop()
+    this.Updater.stop()
   }
 
   command(command, handler) {

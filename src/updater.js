@@ -34,7 +34,7 @@ class Updater extends Telegram {
     try {
       const { offset } = this
       const updates = await this.getUpdate({ offset, limit: 600 })
-
+      console.log(updates)
       if (updates && updates.length) {
         //https://core.telegram.org/bots/api#getting-updates
         //Must be greater by one than the highest among the identifiers of previously received updates
