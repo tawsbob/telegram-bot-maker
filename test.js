@@ -27,7 +27,8 @@ bot.on('update', (updates)=>{
 })*/
 
 bot.on('message', ctx => {
-  ctx
+
+  /*ctx
     .reply('Qual seu primeiro nome?')
     .waitForReply(userReply => {
       const { message } = userReply
@@ -39,32 +40,55 @@ bot.on('message', ctx => {
       const { firstName } = ctx.getState()
 
       ctx.reply(`Seu nome completo é ${firstName} ${message.text}`)
+    })*/
+
+
+    ctx.replyWithMenu({
+      text: 'Menu Level 0',
+      grid: '2x1',
+      id: 'id-menu-0',
+      options: [
+        {
+          label: 'Button 1',
+          id: 'btn-1',
+          params: { 'my-custom-params': 'my-custom-value' },
+          onSelect: params => {
+            console.log('Button 1 click', params)
+          },
+        },
+        {
+          label: 'Button 2',
+          id: 'btn-2',
+          onSelect: params => {
+            console.log('Button 2 click')
+          },
+        },
+      ],
     })
 
   /*ctx.replyWithMenu({
-    text: 'Menu Experimental',
+    text: 'Menu Level 0',
     grid: '2x1',
-    id: 'id-menu-1',
+    id: 'id-menu-0',
     options: [
       {
-        label: 'create new account',
-        id: 'create-acc',
+        label: 'Button 1',
+        id: 'btn-1',
         params: { 'my-custom-params': 'my-custom-value' },
         onSelect: params => {
-          console.log('1', params)
+          console.log(params)
         },
       },
       {
-        label: 'menu 2',
-        id: 'menu-2',
-        params: { 'my-custom-params-2': 'my-custom-value-2' },
+        label: 'Button 2',
+        id: 'btn-2',
         submenu: {
-          text: 'Textando submenu 2',
+          text: 'Menu Level 1',
           grid: '2x1',
-          id: 'id-menu-2',
+          id: 'id-menu-1',
           backButton: {
-            label: 'Back to main menu',
-            id: 'id-menu-1',
+            label: 'Back to level zero menu',
+            id: 'id-menu-0',
           },
           options: [
             {

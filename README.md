@@ -77,6 +77,16 @@ bot.on('message', ctx => {
 
 ```
 
+### Creating Menu
+
+```javascript
+
+bot.on('message', ctx => {
+
+})
+
+```
+
 
 ## Notes
 All updates that remain when the bot is off will be bypassed, it will only react to updates that happen while it is alive, I choose for this architecture to prevent anomalous behavior.
