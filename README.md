@@ -112,17 +112,19 @@ bot.on('message', ctx => {
 
 bot.on('message', ctx => {
   ctx.replyWithMenu({
-    text: 'Menu Level 0', //Menu text
-    grid: '2x1',          //Menu Grid *Required
-    id: 'id-menu-0',      //Menu Id *Required
+    text: 'Menu Level 0',   //<String> text                       ( Text of message )
+    grid: '2x1',            //<String> grid *Required 'ColsxRow'  ( Grid of the Menu )
+    id: 'id-menu-0',        //<String> id *Required               (Id of menu, without it backButton wont work)
     options: [
       {
-        label: 'Button 1', //BUTTON LABEL *Required
-        id: 'btn-1',       //BUTTON ID *Required
-        params: { 'my-custom-params': 'my-custom-value' }, //If you want add params to the button
+        label: 'Button 1',  //<String> label *Required           (Label of button)
+        id: 'btn-1',        //<String> id *Required              (Id of button)
+        params: { 'foo': 'bar' },//<Object> params              (Your custom params if you need)
         onSelect: params => {
           console.log('Button 1 click', params)
-        },                //On User Click to the button
+          //Output: Button 1 click { 'foo': 'bar' }
+
+        },                //<Function> onSelect *Required       (Called when user press the button)
       },
       {
         label: 'Button 2',
