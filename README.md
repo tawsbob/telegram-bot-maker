@@ -221,6 +221,25 @@ bot.on('message', ctx => {
 
 ```
 
+## send Files to user
+
+![Send Image](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/send-img.gif?raw=true)
+
+```javascript
+ctx
+  .reply('Want a photo?')
+  .waitForReply(() => {
+    ctx.replyWithImage({
+      file: {
+        type: 'photo',
+        //url: 'https://images.freeimages.com/images/large-previews/b31/butterfly-1392408.jpg',
+        filePath: './docs/menu-exemple-1.png',
+      },
+    })
+  })
+```
+
+
 
 ## Notes
 All updates that remain when the bot is off will be bypassed, it will only react to updates that happen while it is alive, I choose for this architecture to prevent anomalous behavior.
