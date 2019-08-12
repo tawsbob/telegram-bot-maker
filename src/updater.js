@@ -5,10 +5,13 @@ const { Events } = global
 class Updater extends Telegram {
   constructor(props) {
     super(props)
+    const { updateInterval, updateLimit } = props
     this.pollingTimeout = null
-    this.updateInterval = 100
+    this.updateInterval = updateInterval || 350
+    this.updateLimit = updateLimit || 100
     this.started = false
     this.offset = 0
+    this.isInitial = true
   }
 
   stop() {
@@ -25,14 +28,14 @@ class Updater extends Telegram {
     this.pollingTimeout = setTimeout(this.lookingForUpdates, this.updateInterval)
   }
 
-  async lookingForUpdates() {
+  async lookingForUpdates(isInitial) {
     if (!this.started) {
       return
     }
 
     try {
       const { offset } = this
-      const updates = await this.getUpdate({ offset, limit: 600 })
+      const updates = await this.getUpdate({ offset, limit: this.updateLimit })
 
       if (updates && updates.length) {
         //https://core.telegram.org/bots/api#getting-updates
@@ -40,12 +43,15 @@ class Updater extends Telegram {
         this.offset = updates[updates.length - 1].update_id + 1
       }
 
-      //console.log(updates)
-
-      if (updates && updates.length) {
-        Events.onUpdate(updates)
-        this.check(updates)
+      //ignore all updates while bot is offline to prevent bugs
+      if (!this.isInitial) {
+        if (updates && updates.length) {
+          Events.onUpdate(updates)
+          this.check(updates)
+        }
       }
+
+      this.isInitial = false
 
       this.updateTrigger()
     } catch (e) {
@@ -105,7 +111,7 @@ class Updater extends Telegram {
 
       if (update.message && replyListener.ref && this.updateMatchRef(update, replyListener.ref)) {
         mustReply = true
-        replyListener.handdler()
+        replyListener.handdler(update)
         replyListener.addUpdate(update)
         toDelete.push(replyListener.ref)
       }

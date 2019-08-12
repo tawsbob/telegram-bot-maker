@@ -14,6 +14,17 @@ class Context extends Telegram {
     ;(this.keyboard = Keyboard), (this.buttons = Buttons)
   }
 
+  setState(stateProps) {
+    this.state = {
+      ...this.state,
+      ...stateProps,
+    }
+  }
+
+  getState() {
+    return this.state
+  }
+
   getType() {
     const { callback_query, message } = this.getLastUpdate()
     if (callback_query) {
@@ -90,14 +101,14 @@ class Context extends Telegram {
   reply(text, params) {
     this.sendMessage(this.contextParams({ text, ...params }))
       .then(this.afterBotReply)
-      .catch(console.warn)
+      .catch(this.onError)
     return this
   }
 
   replyWithImage(params) {
     this.sendPhoto(this.contextParams(params))
       .then(this.afterBotReply)
-      .catch(console.warn)
+      .catch(this.onError)
     return this
   }
 
@@ -111,7 +122,7 @@ class Context extends Telegram {
       })
     )
       .then(this.afterBotReply)
-      .catch(console.warn)
+      .catch(this.onError)
     return this
   }
 
@@ -235,6 +246,10 @@ class Context extends Telegram {
   waitForReply(listener) {
     this.replyListeners.push(listener)
     return this
+  }
+
+  onError(err) {
+    console.warn(err)
   }
 }
 
