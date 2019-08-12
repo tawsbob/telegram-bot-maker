@@ -169,5 +169,58 @@ bot.on('message', ctx => {
 
 ```
 
+## Custom Inline Buttons
+
+![Custom inline btn](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/custom-inline-btns.gif?raw=true)
+
+```javascript
+
+bot.on('message', ctx => {
+  ctx.reply(
+    'Testing custom BTNS',
+    ctx.keyboard('inline', [
+      [
+        ctx.buttons.CallBack('Button 1', 'id-btn-1', { params: 'to-btn-1' }, params => {
+          console.log('User hit button 1', params)
+        })
+    ],
+      [
+        ctx.buttons.CallBack('Button 2', 'id-btn-2', { params: 'to-btn-2' }, params => {
+          console.log('User hit button 2', params)
+        })
+      ],
+    ])
+  )
+})
+
+```
+
+## Custom Buttons
+
+![Custom btn](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/custom-btns.gif?raw=true)
+
+```javascript
+
+bot.on('message', ctx => {
+  ctx.reply(
+    'Testing custom BTNS',
+    ctx.keyboard(null, [ //Just the inline params changed
+      [
+        ctx.buttons.CallBack('Button 1', 'id-btn-1', { params: 'to-btn-1' }, params => {
+          console.log('User hit button 1', params)
+        })
+    ],
+      [
+        ctx.buttons.CallBack('Button 2', 'id-btn-2', { params: 'to-btn-2' }, params => {
+          console.log('User hit button 2', params)
+        })
+      ],
+    ])
+  )
+})
+
+```
+
+
 ## Notes
 All updates that remain when the bot is off will be bypassed, it will only react to updates that happen while it is alive, I choose for this architecture to prevent anomalous behavior.

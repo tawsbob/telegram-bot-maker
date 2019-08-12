@@ -27,18 +27,34 @@ bot.on('update', (updates)=>{
 })*/
 
 bot.on('message', ctx => {
-  ctx
+  ctx.reply(
+    'Testing custom BTNS',
+    ctx.keyboard(null, [
+      [
+        ctx.buttons.CallBack('Button 1', 'id-btn-1', { params: 'to-btn-1' }, params => {
+          console.log('User hit button 1', params)
+        }),
+      ],
+      [
+        ctx.buttons.CallBack('Button 2', 'id-btn-2', { params: 'to-btn-2' }, params => {
+          console.log('User hit button 2', params)
+        }),
+      ],
+    ])
+  )
+
+  /*ctx
     .reply('Whats is your first name?')
-    .waitForReply((userReply)=>{
+    .waitForReply(userReply => {
       const { message } = userReply
       ctx.setState({ firstName: message.text })
       ctx.reply(`nice ${message.text}, so whats is your last name?`)
     })
-    .waitForReply((userReply)=>{
+    .waitForReply(userReply => {
       const { message } = userReply
       const { firstName } = ctx.getState()
       ctx.reply(`your full name is ${firstName} ${message.text}`)
-    })
+    })*/
 
   /*ctx.replyWithMenu({
     text: 'Menu Level 0',
