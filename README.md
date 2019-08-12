@@ -12,13 +12,18 @@ After try make may own bot with currents nodejs libraries ( Telegraf  and others
 - About weeks to accept pull request with bugfix
 - Very verbose to work listening to answers and creating buttons / menus
 
+That module arose from my need to create a bot, so I needed to quickly develop a module that would meet my needs, so I didn't bother to implement all the methods / features available in the telegram API.
+
+**My only concern was to develop code that didn't break the application.**
+
+#### If you want to help implement new features or improve code quality, your help is most welcome! 😊
 
 ## Requirements
 
 - Nodejs V8 +
 
 ## Limitations
-It's only for long polling bot, **Webhook** will be implemented soon.
+It's only for long polling bot, **Webhook** will be implemented soon. Feel free to help us!
 
 ## Usage
 
@@ -261,7 +266,6 @@ ctx
     })
   })
 ```
-
 
 
 ## Notes
