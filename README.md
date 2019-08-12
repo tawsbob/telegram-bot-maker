@@ -37,55 +37,44 @@ bot.lauch()
 
 ## Bot Methods
 
-#### lauch
 Start the bot
 ```javascript
   bot.lauch()
 ```
 
-#### stop
 Stop the bot
 ```javascript
   bot.stop()
 ```
 
-#### command
 Add listener to command
 ```javascript
   // * Is Required
   //<String> command *
   //<Function> handler *
   bot.command(command, handler)
+
+  //exemple
+  bot.command('/menu', ctx => {
+    ctx.reply('There is a reply to menu command')
+  })
+
 ```
 
-#### on
 Add listener to bot
 ```javascript
   // * Is Required
   //<String> listener * 'message' || 'update'
   //<Function> handler *
   bot.on(listener, handler)
-```
 
-## Commands
-
-```javascript
-
-bot.command('/menu', ctx => {
-  ctx.reply('There is a reply to menu command')
-})
+  //exemple
+  bot.on('message', ctx => {
+    ctx.reply('A reply to your msg')
+  })
 
 ```
 
-## Message
-
-```javascript
-
-bot.on('message', ctx => {
-  ctx.reply('A reply to your msg')
-})
-
-```
 
 ## Wait For User reply
 ![Wait for user reply](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/reply.gif?raw=true)
