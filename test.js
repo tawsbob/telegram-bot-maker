@@ -27,21 +27,20 @@ bot.on('update', (updates)=>{
 })*/
 
 bot.on('message', ctx => {
-  /*ctx
-    .reply('Qual seu primeiro nome?')
-    .waitForReply(userReply => {
+  ctx
+    .reply('Whats is your first name?')
+    .waitForReply((userReply)=>{
       const { message } = userReply
       ctx.setState({ firstName: message.text })
-      ctx.reply(`Legal ${message.text}, qual seu segundo nome?`)
+      ctx.reply(`nice ${message.text}, so whats is your last name?`)
     })
-    .waitForReply(userReply => {
+    .waitForReply((userReply)=>{
       const { message } = userReply
       const { firstName } = ctx.getState()
+      ctx.reply(`your full name is ${firstName} ${message.text}`)
+    })
 
-      ctx.reply(`Seu nome completo é ${firstName} ${message.text}`)
-    })*/
-
-  ctx.replyWithMenu({
+  /*ctx.replyWithMenu({
     text: 'Menu Level 0',
     grid: '2x1',
     id: 'id-menu-0',
@@ -83,8 +82,8 @@ bot.on('message', ctx => {
                 console.log('Button 4 click')
               },
             },
-          ]
-        }
+          ],
+        },
       },
     ],
   })

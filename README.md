@@ -56,6 +56,7 @@ bot.on('message', ctx => {
 ```
 
 ## Wait For User reply
+![Wait for user reply](https://github.com/tawsbob/telegram-bot-api/blob/master/docs/reply.gif?raw=true)
 
 ```javascript
 
