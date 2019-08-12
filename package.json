@@ -2,9 +2,9 @@
   "name": "telegram-api",
   "version": "1.0.0",
   "description": "nodejs telegram api wrapper",
-  "main": "index.js",
+  "main": "./src/index.js",
   "scripts": {
-    "start": "node ./index.js",
+    "prepare": "npm run prettier",
     "prettier": "prettier --single-quote --trailing-comma es5 --no-semi --print-width 120 --write \"**/*.js\""
   },
   "repository": {
