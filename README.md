@@ -276,3 +276,5 @@ ctx
 
 ## Notes
 All updates that remain when the bot is off will be bypassed, it will only react to updates that happen while it is alive, I choose for this architecture to prevent anomalous behavior.
+
+**This module is in its infancy and still relies on possible help to make it more robust.**
