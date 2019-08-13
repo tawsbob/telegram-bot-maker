@@ -1,8 +1,8 @@
 # telegram-bot-maker
-![The Bot Father]()
+
 
 <div>
-  <img style="display:block; margin:0 auto; width:250px;" src=https://github.com/tawsbob/telegram-bot-maker/blob/master/docs/the-bot-father.jpg?raw=true">
+  <img width="250" src=https://github.com/tawsbob/telegram-bot-maker/blob/master/docs/the-bot-father.jpg?raw=true">
 </div>
 
 A nodejs lightweight library wrapper to [telegram bot api](https://core.telegram.org/bots/api)
