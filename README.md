@@ -1,7 +1,10 @@
 # telegram-bot-maker
-
+[The Bo Father](https://core.telegram.org/file/811140763/1/PihKNbjT8UE/03b57814e13713da37)
 A nodejs lightweight library wrapper to [telegram bot api](https://core.telegram.org/bots/api)
 
+## Learn More about telegram bots
+
+  if you want learn more about [Telegram bots](https://core.telegram.org/bots)
 
 ## How did it come about?
 
