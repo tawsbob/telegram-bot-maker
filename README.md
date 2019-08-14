@@ -33,6 +33,12 @@ That module arose from my need to create a bot, so I needed to quickly develop a
 ## Limitations
 It's only for long polling bot, **Webhook** will be implemented soon. Feel free to help us!
 
+## Install
+
+```bash
+$ npm install telegram-bot-maker
+```
+
 ## Usage
 
 ```javascript
