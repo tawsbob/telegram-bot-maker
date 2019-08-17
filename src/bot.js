@@ -1,10 +1,14 @@
 require('./events')
+
 const Updater = require('./updater')
+const Telegram = require('./telegram-api')
 
 const { Events } = global
 
-class Bot {
+class Bot extends Telegram {
+
   constructor(props) {
+    super(props)
     this.Updater = new Updater(props)
     Events.setContexProps(props)
   }
