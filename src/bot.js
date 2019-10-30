@@ -6,7 +6,6 @@ const Telegram = require('./telegram-api')
 const { Events } = global
 
 class Bot extends Telegram {
-
   constructor(props) {
     super(props)
     this.Updater = new Updater(props)

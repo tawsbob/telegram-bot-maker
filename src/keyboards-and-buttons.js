@@ -22,7 +22,9 @@ const build = Events => {
       const callback_data = params ? this.withParams(params, callback_id) : callback_id
 
       if (handdler) {
-        Events.setCallback_query(callback_data, handdler)
+        if (Events) {
+          Events.setCallback_query(callback_data, handdler)
+        }
       }
       return {
         text,
