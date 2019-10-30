@@ -288,7 +288,7 @@ ctx
 ```
 
 
-## Avaiables Api Methods
+## Availables Api Methods
 
 - getMe
 - sendMessage
