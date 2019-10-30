@@ -288,6 +288,29 @@ ctx
 ```
 
 
+## Avaiables Api Methods
+
+- getMe
+- sendMessage
+- forwardMessage
+- sendPhoto
+- sendAudio
+- sendDocument
+- sendVideo
+- sendAnimation
+- sendVoice
+- sendVideoNote
+- sendMediaGroup
+- sendLocation
+- editMessageLiveLocation
+- stopMessageLiveLocation
+- sendVenue
+- sendContact
+- sendPoll
+- sendChatAction
+- getUserProfilePhotos
+- editMessageText
+
 ## Notes
 All updates that remain when the bot is off will be bypassed, it will only react to updates that happen while it is alive, I choose for this architecture to prevent anomalous behavior.
 
