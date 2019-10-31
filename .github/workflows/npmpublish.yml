@@ -8,18 +8,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-        with:
-          node-version: 12
+      with:
+        node-version: 12
       - run: npm ci
       - run: npm prettier
 
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
-    steps:
-        with:
-          node-version: 12
-          registry-url: https://registry.npmjs.org/
+    steps:      
+      with:
+        node-version: 12
+        registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: npm publish
         env:
