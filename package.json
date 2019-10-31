@@ -1,6 +1,6 @@
 {
   "name": "telegram-bot-maker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "nodejs telegram api wrapper",
   "main": "./src/index.js",
   "scripts": {
