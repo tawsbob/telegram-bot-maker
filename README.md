@@ -43,7 +43,7 @@ $ npm install telegram-bot-maker
 
 ```javascript
 
-const Bot = require('telegram-bot-maker')
+const { Bot } = require('telegram-bot-maker')
 
 const bot = new Bot({
     token: 'YOUR-BOT-TOKEN',  
